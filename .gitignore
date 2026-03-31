@@ -10,3 +10,4 @@ __pycache__
 .DS_Store
 *.log
 tmp/
+.opencode-bootstrap-backup/

@@ -1,31 +1,29 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 00 — OpenCode bootstrap + runnable workspace baseline
+Phase 01A — Proxy ingress foundation
 
 ## Goal
-Make the repo OpenCode-native and locally runnable without changing product logic.
+Turn the existing proxy scaffold into a real ingress slice:
+request -> normalize -> policy decision -> typed response
 
 ## Files in scope
-- AGENTS.md
-- opencode.json
-- .opencode/agents/**
-- .opencode/commands/**
-- package.json
-- apps/*/package.json
-- packages/*/package.json
-- .env.example
+- apps/proxy/src/**
+- packages/contracts/src/**
+- packages/policy/src/**
+- apps/proxy/package.json
+- packages/contracts/package.json
+- packages/policy/package.json
 
 ## Do not touch
-- apps/proxy/src/**
-- apps/dashboard/app/**
-- packages/policy/src/**
-- services/optimizer/app/**
+- apps/dashboard/**
+- apps/worker/**
 - packages/db/schema.sql
+- services/optimizer/**
 
 ## Acceptance criteria
-- OpenCode loads project rules
-- OpenCode agents and commands exist
-- workspace install succeeds
-- proxy boots
-- GET /health returns ok
+- /health returns ok
+- /v1/chat/completions accepts a valid request
+- request is normalized into shared proxy contract
+- policy evaluation runs
+- response is typed and non-stub

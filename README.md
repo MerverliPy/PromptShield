@@ -1,5 +1,21 @@
 # PromptShield
 
+## Current implementation status
+
+PromptShield is currently in Phase 01A: Proxy ingress foundation.
+
+Implemented now:
+- monorepo structure
+- proxy health endpoint
+- request normalization scaffold
+- shared policy/contracts scaffolding
+- placeholder dashboard shell
+
+Not completed yet:
+- non-stub proxy decision flow
+- validated optimizer runtime integration
+- persistence-backed analytics
+
 Premium cost-control layer for indie AI products.
 
 PromptShield combines:

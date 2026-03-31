@@ -1,5 +1,10 @@
 # Phases
 
+## Usage
+This file is the roadmap only.
+For the current implementation phase, see `docs/phases/ACTIVE.md`.
+
+
 ## Delivery order
 
 1. **Phase 01A — Proxy ingress foundation**  

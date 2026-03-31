@@ -1,21 +1,27 @@
 # HANDOFF
 
 Last completed action:
-- OpenCode operating layer bootstrap initialized.
+- OpenCode/bootstrap scaffolding completed
+- Proxy health endpoint exists
 
 Current state:
-- Repo scaffold exists.
-- OpenCode project rules, config, agents, and commands are installed.
-- Runtime boot validation has not been completed yet.
+- Repo structure exists
+- Proxy route exists but chat-completions is still stubbed
+- Dashboard is placeholder-only
+- Optimizer is documented but not yet fully implemented as a validated runtime surface
+
+Validated on:
+- not yet validated after phase reconciliation
 
 Next immediate step:
-- Verify provider model slugs with `/models` or `opencode models`.
-- Install missing workspace dependencies if needed.
-- Start the proxy locally.
-- Verify `/health`.
+- implement policy-backed response in apps/proxy/src/routes/chat-completions.ts
+
+Blocked by:
+- shared response contract not finalized
 
 Files involved:
-- AGENTS.md
-- opencode.json
-- .opencode/agents/*
-- .opencode/commands/*
+- apps/proxy/src/server.ts
+- apps/proxy/src/routes/chat-completions.ts
+- apps/proxy/src/lib/openai-normalize.ts
+- packages/contracts/src/**
+- packages/policy/src/**
