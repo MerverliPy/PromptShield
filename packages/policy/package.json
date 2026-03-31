@@ -2,5 +2,8 @@
   "name": "@promptshield/policy",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@promptshield/contracts": "workspace:^"
+  }
 }

@@ -2,7 +2,7 @@
   "name": "promptshield",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm@9",
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
     "dev:dashboard": "pnpm --dir apps/dashboard dev",
     "dev:proxy": "pnpm --dir apps/proxy dev",
@@ -11,5 +11,12 @@
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
     "format": "pnpm -r --if-present format"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
   }
 }
