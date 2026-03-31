@@ -1,0 +1,15 @@
+{
+  "name": "promptshield",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9",
+  "scripts": {
+    "dev:dashboard": "pnpm --dir apps/dashboard dev",
+    "dev:proxy": "pnpm --dir apps/proxy dev",
+    "dev:worker": "pnpm --dir apps/worker dev",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "format": "pnpm -r --if-present format"
+  }
+}
