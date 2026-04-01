@@ -27,6 +27,8 @@ test("chat completions returns an allow decision for a valid request", async () 
     assert.equal(body.priority, "standard");
     assert.equal(body.budget.requestCeilingUsd, 0.02);
     assert.equal(body.budget.overBudget, false);
+    assert.equal(typeof body.lineage?.requestId, "string");
+    assert.ok(body.lineage.requestId.startsWith("req_"));
   } finally {
     await app.close();
   }
@@ -88,6 +90,47 @@ test("chat completions deterministically downgrades an over-budget request", asy
     assert.equal(body.priority, "standard");
     assert.equal(body.budget.requestCeilingUsd, 0.01);
     assert.equal(body.budget.overBudget, true);
+    assert.equal(typeof body.lineage?.requestId, "string");
+    assert.ok(body.lineage.requestId.startsWith("req_"));
+  } finally {
+    await app.close();
+  }
+});
+
+test("chat completions generates deterministic lineage request metadata", async () => {
+  const app = Fastify();
+  registerChatCompletionsRoute(app);
+
+  try {
+    const payload = {
+      model: "gpt-4.1",
+      messages: [{ role: "user", content: "Summarize the latest request." }],
+      temperature: 0.7,
+      max_tokens: 256,
+      metadata: {
+        workspace: "acme",
+      },
+    };
+
+    const firstResponse = await app.inject({
+      method: "POST",
+      url: "/v1/chat/completions",
+      payload,
+    });
+
+    const secondResponse = await app.inject({
+      method: "POST",
+      url: "/v1/chat/completions",
+      payload,
+    });
+
+    assert.equal(firstResponse.statusCode, 200);
+    assert.equal(secondResponse.statusCode, 200);
+
+    const firstBody = firstResponse.json();
+    const secondBody = secondResponse.json();
+
+    assert.equal(firstBody.lineage.requestId, secondBody.lineage.requestId);
   } finally {
     await app.close();
   }

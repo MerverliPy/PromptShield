@@ -22,7 +22,20 @@ export function registerChatCompletionsRoute(app: FastifyInstance) {
         };
       }
 
-      return evaluateRequest(normalized.value);
+      const decision = evaluateRequest(normalized.value);
+      const requestId = normalized.value.lineage?.requestId;
+
+      if (!requestId) {
+        return decision;
+      }
+
+      return {
+        ...decision,
+        lineage: {
+          ...decision.lineage,
+          requestId,
+        },
+      };
     },
   );
 }
