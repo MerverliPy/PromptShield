@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import Fastify from "fastify";
+import { evaluateRequest } from "@promptshield/policy/index";
+import { buildLineageEventPayload } from "../lib/build-lineage-event";
+import { normalizeOpenAIChatRequest } from "../lib/openai-normalize";
 import { registerChatCompletionsRoute } from "./chat-completions";
 
 test("chat completions returns an allow decision for a valid request", async () => {
@@ -134,4 +137,84 @@ test("chat completions generates deterministic lineage request metadata", async 
   } finally {
     await app.close();
   }
+});
+
+test("buildLineageEventPayload maps request and downgrade decision into stable shell", () => {
+  const normalized = normalizeOpenAIChatRequest({
+    model: "gpt-4.1",
+    messages: [{ role: "user", content: "Draft a detailed response." }],
+    max_tokens: 900,
+    metadata: {
+      workspace: "acme",
+      request_ceiling_usd: "0.01",
+    },
+  });
+
+  assert.equal(normalized.ok, true);
+
+  if (!normalized.ok) {
+    return;
+  }
+
+  const decision = evaluateRequest(normalized.value);
+  const event = buildLineageEventPayload({ request: normalized.value, decision });
+
+  assert.deepEqual(event, {
+    request: {
+      requestId: normalized.value.lineage?.requestId,
+      decisionKind: "downgrade",
+      modelRequested: "gpt-4.1",
+      modelServed: "gpt-4.1-mini",
+      estimatedCostUsd: 0.02721,
+      requestCeilingUsd: 0.01,
+      overBudget: true,
+      priority: "standard",
+      tags: [
+        { key: "request_ceiling_usd", value: "0.01" },
+        { key: "workspace", value: "acme" },
+      ],
+    },
+    action: {
+      actionType: "model_reroute",
+      reason: "low_or_standard_priority_rerouted_to_cheaper_model",
+      beforeValue: 0.02721,
+      afterValue: 0.02721,
+    },
+    lineage: {
+      requestEventId: undefined,
+      actionId: undefined,
+    },
+  });
+});
+
+test("buildLineageEventPayload is deterministic for equivalent inputs", () => {
+  const payload = {
+    model: "gpt-4.1",
+    messages: [{ role: "user", content: "Summarize the latest request." }],
+    temperature: 0.7,
+    max_tokens: 256,
+    metadata: {
+      workspace: "acme",
+    },
+  };
+  const firstNormalized = normalizeOpenAIChatRequest(payload);
+  const secondNormalized = normalizeOpenAIChatRequest(payload);
+
+  assert.equal(firstNormalized.ok, true);
+  assert.equal(secondNormalized.ok, true);
+
+  if (!firstNormalized.ok || !secondNormalized.ok) {
+    return;
+  }
+
+  const firstEvent = buildLineageEventPayload({
+    request: firstNormalized.value,
+    decision: evaluateRequest(firstNormalized.value),
+  });
+  const secondEvent = buildLineageEventPayload({
+    request: secondNormalized.value,
+    decision: evaluateRequest(secondNormalized.value),
+  });
+
+  assert.deepEqual(firstEvent, secondEvent);
 });
