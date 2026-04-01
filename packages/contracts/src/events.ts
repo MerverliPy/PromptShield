@@ -1,20 +1,9 @@
-export type RequestEvent = {
-  workspaceId: string;
-  routeKey: string;
-  requestId: string;
-  modelRequested: string;
-  modelServed: string;
-  inputTokens: number;
-  outputTokens?: number;
-  estimatedCostUsd: number;
-  decisionKind: "pass_through" | "reroute" | "compress" | "reject";
-  createdAt: string;
-};
+export type {
+  ApiRoute,
+  DecisionKind,
+  OptimizationAction,
+  RequestEvent,
+  Workspace,
+} from "@promptshield/contracts/durable";
 
-export type OptimizationActionEvent = {
-  requestId: string;
-  actionType: string;
-  beforeValue: number;
-  afterValue: number;
-  reason: string;
-};
+export type OptimizationActionEvent = import("@promptshield/contracts/durable").OptimizationAction;

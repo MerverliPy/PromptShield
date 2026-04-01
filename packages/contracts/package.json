@@ -2,5 +2,14 @@
   "name": "@promptshield/contracts",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./durable": "./src/durable.ts",
+    "./events": "./src/events.ts",
+    "./messages": "./src/messages.ts",
+    "./proxy": "./src/proxy.ts",
+    "./recommendations": "./src/recommendations.ts",
+    "./savings": "./src/savings.ts"
+  }
 }
