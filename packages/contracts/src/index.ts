@@ -14,4 +14,3 @@ export type {
   ProxyDecision,
   ProxyRequestPriority,
 } from "@promptshield/contracts/proxy";
-export type { Recommendation } from "@promptshield/contracts/recommendations";

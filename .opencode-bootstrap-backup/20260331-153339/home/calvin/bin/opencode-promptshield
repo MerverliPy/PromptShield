@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-cd "/home/calvin/projects/PromptShield"
-export OPENCODE_CONFIG="/home/calvin/.config/opencode-promptshield/opencode.json"
-export OPENCODE_CONFIG_DIR="/home/calvin/.config/opencode-promptshield"
-exec opencode
