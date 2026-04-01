@@ -1,26 +1,28 @@
 # CURRENT_STATE
 
 updated_at: 2026-04-01
-phase: Phase 01F
+phase: durable
 status: active
 
 ## Architecture
 - monorepo with dashboard, proxy, worker, optimizer, and shared packages
 - deterministic budget and routing logic isolated in `packages/policy`
 - shared TypeScript contracts isolated in `packages/contracts`
+- `packages/db` is the bounded persistence surface for lineage storage and later durable read models
+- Python owns the optimizer HTTP runtime in `services/optimizer`, while TypeScript surfaces stay helper-only orchestration and contract layers
 - database lineage centered on request, optimization action, and savings records
 
 ## What exists
-- runnable structural baseline across proxy, dashboard, worker, and optimizer surfaces
+- runnable structural baseline across proxy, dashboard, worker, optimizer, and shared persistence surfaces
 - durable lineage schema and aligned contracts exist
 - proxy request normalization generates deterministic lineage metadata
-- proxy route builds a typed lineage event payload shell
-- dashboard exists as a shell backed by demo data
-- worker exists as a placeholder surface
+- proxy route builds and emits a typed lineage event payload through an explicit seam
+- dashboard has a contracts/read-model seam, but the app still renders a static preview summary
+- worker has a savings-rollup surface, but durable ingestion jobs are not implemented yet
 
 ## Known risks
 - runtime write and read paths are not yet wired end to end
-- proxy lineage payload shell is not yet emitted through a dedicated seam
+- db durable write and read paths are not yet wired through the full lineage flow
 - dashboard is not yet backed by durable lineage records
-- worker jobs are not yet implemented beyond placeholder status
-- optimizer ownership is split across Python and TypeScript surfaces
+- worker ingestion over saved lineage records is not implemented yet
+- optimizer integrations still need full alignment to the Python-owned `/optimize` boundary
