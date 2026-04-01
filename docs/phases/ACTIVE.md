@@ -1,37 +1,38 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01B — Event schema and persistence foundation
+Phase 01C — Dashboard shell
 
 ## Goal
-Add the first durable request/action/savings lineage schema and aligned event contract types without changing app runtime behavior.
+Build the premium dashboard shell with spend, savings, and recent request placeholders backed by local view models only.
 
 ## Files in scope
-- packages/db/schema.sql
-- packages/contracts/src/events.ts
-- packages/contracts/src/proxy.ts
+- apps/dashboard/app/page.tsx
+- apps/dashboard/components/dashboard-shell.tsx
+- apps/dashboard/lib/view-models.ts
+- apps/dashboard/lib/mock-data.ts
 
 ## Do not touch
-- apps/**
+- apps/proxy/**
+- apps/worker/**
 - services/**
-- packages/policy/**
-- packages/ui/**
+- packages/**
 - docs/**
 - memory/**
 
 ## Constraints
-- schema-first changes only
-- keep request/action/savings lineage explicit
-- no route-handler, UI, or worker logic edits
-- no broad refactor outside listed files
+- UI shell only; no business logic in components
+- use local mock/view-model data only
+- no provider, policy, or database integration in this phase
+- keep pages/components thin and contract-ready
 
 ## Acceptance criteria
-- `packages/db/schema.sql` defines durable lineage tables for request, action, and savings relationships
-- `packages/contracts/src/events.ts` exports event types that map to the new lineage records
-- `packages/contracts/src/proxy.ts` stays aligned with event payload identifiers where needed
-- no app/service source files are changed
+- dashboard renders spend, savings, and recent request placeholder sections
+- page composition stays in `app/page.tsx` and display composition in `components/dashboard-shell.tsx`
+- view mapping remains in `lib/view-models.ts` and local fixture data in `lib/mock-data.ts`
+- no changes outside listed dashboard files
 
 ## Validation
-- `pnpm --filter @promptshield/contracts typecheck`
-- verify schema includes explicit request -> action -> savings lineage keys
-- `git diff -- packages/db/schema.sql packages/contracts/src/events.ts packages/contracts/src/proxy.ts`
+- `pnpm --filter @promptshield/dashboard typecheck`
+- run `pnpm --filter @promptshield/dashboard dev` and verify dashboard loads
+- `git diff -- apps/dashboard/app/page.tsx apps/dashboard/components/dashboard-shell.tsx apps/dashboard/lib/view-models.ts apps/dashboard/lib/mock-data.ts`

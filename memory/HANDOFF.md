@@ -1,23 +1,21 @@
 # HANDOFF
 
 Last completed action:
-- Repo-health and validation baseline sync completed.
+- Phase 01B lineage foundation completed (schema + contracts alignment baseline).
 
 Current state:
-- Workspace now includes `services/*` and optimizer-targeted root scripts.
-- Contracts barrel duplicate export was removed.
-- Generated artifacts and bootstrap backup noise were removed and ignored.
-- `.env.example` exists, is tracked, and quick start docs now match current defaults.
-- Optimizer Python tests run from both repo root and `services/optimizer` without manual `PYTHONPATH`.
+- Control-plane docs are synced to the current repo baseline.
+- Durable lineage foundation exists across request/action/savings schema and related contracts.
+- Runtime surfaces are runnable with clean workspace/env hygiene.
 
 Next immediate step:
-- Execute Phase 01B from `docs/phases/ACTIVE.md`.
-- Add durable request/action/savings lineage schema in `packages/db/schema.sql`.
-- Align contracts in `packages/contracts/src/events.ts` and `packages/contracts/src/proxy.ts`.
-- Run scoped validation for schema/contracts changes.
+- Execute Phase 01C from `docs/phases/ACTIVE.md`.
+- Build dashboard shell placeholders and view-model wiring in scoped dashboard files only.
+- Validate with dashboard typecheck + local dev load check.
 
 Files involved:
 - docs/phases/ACTIVE.md
-- packages/db/schema.sql
-- packages/contracts/src/events.ts
-- packages/contracts/src/proxy.ts
+- apps/dashboard/app/page.tsx
+- apps/dashboard/components/dashboard-shell.tsx
+- apps/dashboard/lib/view-models.ts
+- apps/dashboard/lib/mock-data.ts
