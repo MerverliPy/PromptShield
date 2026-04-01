@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import type { LineageEventWriteAdapter } from "@promptshield/db";
 import type { ProxyChatDecision } from "@promptshield/contracts/proxy";
 import { evaluateRequest } from "@promptshield/policy/index";
 import { buildLineageEventPayload } from "../lib/build-lineage-event";
@@ -9,7 +10,10 @@ import {
   type OpenAIChatCompletionRequest,
 } from "../lib/openai-normalize";
 
-export function registerChatCompletionsRoute(app: FastifyInstance) {
+export function registerChatCompletionsRoute(
+  app: FastifyInstance,
+  options: { lineageAdapter?: LineageEventWriteAdapter } = {},
+) {
   app.post<{ Body: OpenAIChatCompletionRequest; Reply: ProxyChatDecision }>(
     "/v1/chat/completions",
     async (request, reply) => {
@@ -34,7 +38,11 @@ export function registerChatCompletionsRoute(app: FastifyInstance) {
 
       if (lineageEvent) {
         emitLineageEvent({ payload: lineageEvent, log: request.log });
-        void persistLineageEvent({ payload: lineageEvent, log: request.log });
+        void persistLineageEvent({
+          payload: lineageEvent,
+          log: request.log,
+          adapter: options.lineageAdapter,
+        });
       }
 
       if (!requestId) {

@@ -363,24 +363,9 @@ test("persistLineageEvent writes through the db seam when an adapter is provided
       estimatedCostUsd: 0.02721,
       decisionKind: "downgrade",
     },
-    action: {
-      actionType: "model_reroute",
-      beforeValue: 0.02721,
-      afterValue: 0.02721,
-      reason: "low_or_standard_priority_rerouted_to_cheaper_model",
-    },
   };
 
-  assert.deepEqual(writes, [
-    { step: "request", payload: expectedWrite.request },
-    {
-      step: "action",
-      payload: {
-        requestEventId: "request-event-1",
-        ...expectedWrite.action,
-      },
-    },
-  ]);
+  assert.deepEqual(writes, [{ step: "request", payload: expectedWrite.request }]);
   assert.deepEqual(debugCalls, [
     {
       payload: { lineageWrite: expectedWrite },
@@ -393,12 +378,6 @@ test("persistLineageEvent writes through the db seam when an adapter is provided
             id: "request-event-1",
             createdAt: "2026-04-01T00:00:00.000Z",
             ...expectedWrite.request,
-          },
-          action: {
-            id: "action-1",
-            createdAt: "2026-04-01T00:00:01.000Z",
-            requestEventId: "request-event-1",
-            ...expectedWrite.action,
           },
         },
       },
@@ -574,13 +553,7 @@ test("buildServer persists downgrade lineage through the default sqlite adapter"
           model_served: "gpt-4.1-mini",
         },
       ]);
-      assert.deepEqual(actionRows, [
-        {
-          action_type: "model_reroute",
-          before_value: 0.02721,
-          after_value: 0.02721,
-        },
-      ]);
+      assert.deepEqual(actionRows, []);
       assert.deepEqual(savingsRows, []);
     });
   } finally {
