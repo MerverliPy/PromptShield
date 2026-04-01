@@ -1,59 +1,40 @@
+import {
+  writeProxyLineageEvent,
+  type LineageEventWriteAdapter,
+  type ProxyPersistedLineageWrite,
+  type ProxyPersistedSavingsWrite,
+} from "@promptshield/db";
 import type { FastifyBaseLogger } from "fastify";
-import type {
-  LineageStore,
-  LineageWrite,
-} from "../../../../packages/db/src/lineage-writes";
 import type { ProxyLineageEventPayload } from "./build-lineage-event";
 
 type LineagePersistenceLogger = Pick<FastifyBaseLogger, "debug" | "warn">;
 
-const noopLineageStore: LineageStore = {
-  async writeLineage(input: LineageWrite) {
-    return {
-      request: {
-        id: input.request.requestId,
-        createdAt: new Date(0).toISOString(),
-        ...input.request,
-      },
-      ...(input.action
-        ? {
-            action: {
-              id: input.action.requestEventId,
-              createdAt: new Date(0).toISOString(),
-              ...input.action,
-            },
-          }
-        : {}),
-      ...(input.savings
-        ? {
-            savings: {
-              id: input.savings.requestEventId,
-              createdAt: new Date(0).toISOString(),
-              ...input.savings,
-            },
-          }
-        : {}),
-    };
-  },
-};
-
 export async function persistLineageEvent(input: {
   payload: ProxyLineageEventPayload;
   log: LineagePersistenceLogger;
-  store?: LineageStore;
+  adapter?: LineageEventWriteAdapter;
 }): Promise<void> {
   const write = mapLineageEventToWrite(input.payload);
+  const adapter = input.adapter;
+
+  if (!adapter) {
+    input.log.debug({ lineageWrite: write }, "Proxy lineage persistence skipped: no db adapter configured");
+    return;
+  }
 
   try {
-    await (input.store ?? noopLineageStore).writeLineage(write);
+    const persisted = await writeProxyLineageEvent(adapter, write);
+
     input.log.debug({ lineageWrite: write }, "Proxy lineage write payload shell");
+    input.log.debug({ lineageResult: persisted }, "Proxy lineage persisted through db seam");
   } catch (error) {
     input.log.warn({ err: error, lineageWrite: write }, "Proxy lineage persistence failed");
   }
 }
 
-function mapLineageEventToWrite(payload: ProxyLineageEventPayload): LineageWrite {
+function mapLineageEventToWrite(payload: ProxyLineageEventPayload): ProxyPersistedLineageWrite {
   const workspaceId = getTagValue(payload.request.tags, "workspace") ?? "";
+  const savings = buildSavingsWrite(payload.action);
 
   return {
     request: {
@@ -67,10 +48,9 @@ function mapLineageEventToWrite(payload: ProxyLineageEventPayload): LineageWrite
       estimatedCostUsd: payload.request.estimatedCostUsd,
       decisionKind: payload.request.decisionKind,
     },
-    ...(payload.action && payload.lineage.requestEventId
+    ...(payload.action
       ? {
           action: {
-            requestEventId: payload.lineage.requestEventId,
             actionType: payload.action.actionType,
             beforeValue: payload.action.beforeValue,
             afterValue: payload.action.afterValue,
@@ -78,9 +58,25 @@ function mapLineageEventToWrite(payload: ProxyLineageEventPayload): LineageWrite
           },
         }
       : {}),
+    ...(savings ? { savings } : {}),
   };
 }
 
 function getTagValue(tags: ProxyLineageEventPayload["request"]["tags"], key: string): string | null {
   return tags.find((tag) => tag.key === key)?.value ?? null;
+}
+
+function buildSavingsWrite(
+  action: ProxyLineageEventPayload["action"],
+): ProxyPersistedSavingsWrite | undefined {
+  if (!action || action.actionType !== "model_reroute" || action.beforeValue <= action.afterValue) {
+    return undefined;
+  }
+
+  return {
+    grossCostUsd: action.beforeValue,
+    optimizedCostUsd: action.afterValue,
+    realizedSavingsUsd: Number((action.beforeValue - action.afterValue).toFixed(6)),
+    source: "routing",
+  };
 }
