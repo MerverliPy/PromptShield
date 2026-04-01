@@ -1,38 +1,39 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01C — Dashboard shell
+Phase 01F — Proxy lineage event emit seam
 
 ## Goal
-Build the premium dashboard shell with spend, savings, and recent request placeholders backed by local view models only.
+Add a bounded proxy-side emission seam that accepts the typed lineage event payload shell for later persistence or worker delivery.
 
 ## Files in scope
-- apps/dashboard/app/page.tsx
-- apps/dashboard/components/dashboard-shell.tsx
-- apps/dashboard/lib/view-models.ts
-- apps/dashboard/lib/mock-data.ts
+- apps/proxy/src/lib/build-lineage-event.ts
+- apps/proxy/src/lib/emit-lineage-event.ts
+- apps/proxy/src/routes/chat-completions.ts
+- apps/proxy/src/routes/chat-completions.test.ts
 
 ## Do not touch
-- apps/proxy/**
+- packages/db/**
+- packages/policy/**
+- apps/dashboard/**
 - apps/worker/**
 - services/**
-- packages/**
 - docs/**
 - memory/**
 
 ## Constraints
-- UI shell only; no business logic in components
-- use local mock/view-model data only
-- no provider, policy, or database integration in this phase
-- keep pages/components thin and contract-ready
+- control-plane seam only; no database writes
+- no queue/client/provider integration
+- keep route handlers thin and deterministic
+- no broad refactor or contract churn
 
 ## Acceptance criteria
-- dashboard renders spend, savings, and recent request placeholder sections
-- page composition stays in `app/page.tsx` and display composition in `components/dashboard-shell.tsx`
-- view mapping remains in `lib/view-models.ts` and local fixture data in `lib/mock-data.ts`
-- no changes outside listed dashboard files
+- proxy route maps normalized request + decision into typed lineage event payload shell
+- proxy route invokes a local emission seam with the payload shell
+- tests verify payload shell shape and deterministic behavior
+- no changes outside listed proxy files
 
 ## Validation
-- `pnpm --filter @promptshield/dashboard typecheck`
-- run `pnpm --filter @promptshield/dashboard dev` and verify dashboard loads
-- `git diff -- apps/dashboard/app/page.tsx apps/dashboard/components/dashboard-shell.tsx apps/dashboard/lib/view-models.ts apps/dashboard/lib/mock-data.ts`
+- `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
+- `pnpm --filter @promptshield/proxy test`
+- `git diff -- apps/proxy/src/lib/build-lineage-event.ts apps/proxy/src/lib/emit-lineage-event.ts apps/proxy/src/routes/chat-completions.ts apps/proxy/src/routes/chat-completions.test.ts`

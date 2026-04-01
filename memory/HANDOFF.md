@@ -10,13 +10,13 @@ Current state:
 - Runtime surfaces remain runnable with clean workspace/env hygiene.
 
 Next immediate step:
-- Execute the active dashboard shell phase from `docs/phases/ACTIVE.md`.
-- Build dashboard shell placeholders and view-model wiring in scoped dashboard files only.
-- Validate with dashboard typecheck + local dev load check.
+- Execute Phase 01F from `docs/phases/ACTIVE.md`.
+- Add a local proxy emission seam for typed lineage event payload shells.
+- Validate with proxy typecheck + proxy tests.
 
 Files involved:
 - docs/phases/ACTIVE.md
-- apps/dashboard/app/page.tsx
-- apps/dashboard/components/dashboard-shell.tsx
-- apps/dashboard/lib/view-models.ts
-- apps/dashboard/lib/mock-data.ts
+- apps/proxy/src/lib/build-lineage-event.ts
+- apps/proxy/src/lib/emit-lineage-event.ts
+- apps/proxy/src/routes/chat-completions.ts
+- apps/proxy/src/routes/chat-completions.test.ts
