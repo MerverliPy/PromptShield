@@ -1,7 +1,7 @@
 -- PromptShield durable schema
 -- Primary lineage:
---   workspace -> api_route -> request_event -> optimization_action
---   request_event -> savings_record (one final savings record per request)
+--   workspace -> api_route -> request_event -> optimization_action -> savings_record
+-- Savings records also keep the parent request foreign key for direct request-level queries.
 -- Future policy and billing tables can be added without changing this lineage.
 
 create table workspace (
@@ -21,7 +21,7 @@ create table request_event (
   id uuid primary key,
   workspace_id uuid not null references workspace(id),
   api_route_id uuid references api_route(id),
-  request_id text not null,
+  request_id text not null unique,
   model_requested text not null,
   model_served text not null,
   input_tokens integer not null,
@@ -43,7 +43,8 @@ create table optimization_action (
 
 create table savings_record (
   id uuid primary key,
-  request_event_id uuid not null unique references request_event(id),
+  request_event_id uuid not null references request_event(id),
+  optimization_action_id uuid not null unique references optimization_action(id),
   gross_cost_usd numeric(12, 6) not null,
   optimized_cost_usd numeric(12, 6) not null,
   realized_savings_usd numeric(12, 6) not null,
