@@ -1,11 +1,11 @@
 # HANDOFF
 
 Last completed action:
-- Phase 01C durable lineage contract alignment completed.
+- Phase 01D proxy request lineage enrichment completed.
 
 Current state:
-- Durable lineage contracts now match schema, including savings linkage to optimization actions.
-- Event exports are simplified while keeping compatibility aliases used by proxy/worker surfaces.
+- Proxy normalization now adds deterministic lineage `requestId` metadata for valid requests.
+- Proxy decision responses now preserve lineage metadata where applicable.
 - Runtime surfaces remain runnable with clean workspace/env hygiene.
 
 Next immediate step:

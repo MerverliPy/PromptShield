@@ -10,6 +10,7 @@
 - runnable baseline across proxy, dashboard, worker, and optimizer surfaces
 - workspace wiring is stable for apps, packages, and services with root-level optimizer workflows
 - durable lineage foundation is in place across request/action/savings schema and aligned contracts
+- proxy request normalization enriches valid requests with deterministic lineage metadata
 - tracked `.env.example` and artifact-ignore hygiene are in place for clean local setup
 
 ## Known risks
