@@ -1,22 +1,36 @@
 # HANDOFF
 
-Last completed action:
-- Phase 01E proxy lineage event payload shell completed.
+updated_at: 2026-04-01
+phase: Phase 01F
+status: active
 
-Current state:
-- Proxy normalization now adds deterministic lineage `requestId` metadata for valid requests.
-- Proxy decision responses now preserve lineage metadata where applicable.
-- Proxy route now builds a typed lineage event payload shell from normalized request + decision data.
-- Runtime surfaces remain runnable with clean workspace/env hygiene.
+## Last completed action
+- Phase 01E completed: proxy lineage event payload shell added
 
-Next immediate step:
-- Execute Phase 01F from `docs/phases/ACTIVE.md`.
-- Add a local proxy emission seam for typed lineage event payload shells.
-- Validate with proxy typecheck + proxy tests.
+## Current state
+- Proxy normalization adds deterministic lineage `requestId` metadata for valid requests
+- Proxy route builds a typed lineage event payload shell from normalized request plus decision data
+- Event payload shell is not yet emitted through a dedicated seam
+- Runtime surfaces remain structurally runnable
 
-Files involved:
-- docs/phases/ACTIVE.md
-- apps/proxy/src/lib/build-lineage-event.ts
-- apps/proxy/src/lib/emit-lineage-event.ts
-- apps/proxy/src/routes/chat-completions.ts
-- apps/proxy/src/routes/chat-completions.test.ts
+## Files in scope
+- `apps/proxy/src/lib/build-lineage-event.ts`
+- `apps/proxy/src/lib/emit-lineage-event.ts`
+- `apps/proxy/src/routes/chat-completions.ts`
+
+## Validation
+- `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
+- `pnpm --filter @promptshield/proxy test`
+
+## Blocker
+- `apps/proxy/src/lib/emit-lineage-event.ts` does not yet exist
+
+## Next immediate step
+- Add the local proxy emission seam
+- Invoke it from the chat completions route
+- Validate typecheck and proxy tests
+
+## Completion signal
+- emission seam exists
+- route calls seam with typed payload shell
+- validation passes

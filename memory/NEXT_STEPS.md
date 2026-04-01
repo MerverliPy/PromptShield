@@ -1,7 +1,11 @@
 # NEXT_STEPS
 
-1. Execute Phase 01F in `docs/phases/ACTIVE.md` (proxy lineage event emit seam).
-2. Wire proxy lineage event payload shell into a durable emit path (no-op shell exists; persistence/queue path still pending).
-3. Expand deterministic policy rules and reasons in `packages/policy/**`.
-4. Wire worker analytics/recommendation jobs to consume saved lineage events.
-5. Build dashboard spend/savings views on durable lineage records after proxy+worker wiring.
+updated_at: 2026-04-01
+phase: Phase 01F
+status: active
+
+1. Complete Phase 01F by adding the proxy lineage event emit seam.
+2. Add a durable write path for emitted lineage records.
+3. Define worker ingestion over saved lineage records.
+4. Replace dashboard demo data with aggregate read models.
+5. Resolve optimizer ownership into one clear runtime boundary.

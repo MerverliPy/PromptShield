@@ -1,5 +1,9 @@
 # CURRENT_STATE
 
+updated_at: 2026-04-01
+phase: Phase 01F
+status: active
+
 ## Architecture
 - monorepo with dashboard, proxy, worker, optimizer, and shared packages
 - deterministic budget and routing logic isolated in `packages/policy`
@@ -7,14 +11,16 @@
 - database lineage centered on request, optimization action, and savings records
 
 ## What exists
-- runnable baseline across proxy, dashboard, worker, and optimizer surfaces
-- workspace wiring is stable for apps, packages, and services with root-level optimizer workflows
-- durable lineage foundation is in place across request/action/savings schema and aligned contracts
-- proxy request normalization enriches valid requests with deterministic lineage metadata
-- proxy route can now build a typed lineage event payload shell from normalized request + policy decision data
-- tracked `.env.example` and artifact-ignore hygiene are in place for clean local setup
+- runnable structural baseline across proxy, dashboard, worker, and optimizer surfaces
+- durable lineage schema and aligned contracts exist
+- proxy request normalization generates deterministic lineage metadata
+- proxy route builds a typed lineage event payload shell
+- dashboard exists as a shell backed by demo data
+- worker exists as a placeholder surface
 
 ## Known risks
-- runtime write/read paths are not yet fully wired to lineage records across proxy/worker/dashboard
-- proxy lineage event shell is only generated/logged today and is not yet persisted or forwarded to workers
-- contract and schema evolution still needs disciplined versioning to prevent cross-service drift
+- runtime write and read paths are not yet wired end to end
+- proxy lineage payload shell is not yet emitted through a dedicated seam
+- dashboard is not yet backed by durable lineage records
+- worker jobs are not yet implemented beyond placeholder status
+- optimizer ownership is split across Python and TypeScript surfaces

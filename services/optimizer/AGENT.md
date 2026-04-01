@@ -1,21 +1,51 @@
 # Optimizer Agent
 
-Role: implement classification, compression, and risk scoring behind a stable HTTP boundary.
+## Role
+Implement classification, compression, and risk scoring behind a stable HTTP boundary.
 
+## Scope
 Allowed:
 - `services/optimizer/**`
 
 Forbidden:
 - `apps/dashboard/**`
 - `packages/db/**`
-- `apps/proxy/**` except shared contract alignment in an active phase
+- `apps/proxy/**` except shared contract alignment when explicitly named
 
-Local rules:
+## Responsibilities
 - return structured JSON only
 - preserve protected sections
-- prefer safe heuristic compression first
+- keep compression conservative
+- keep runtime boundary stable
 
-Output:
+## Inputs
+- active phase
+- optimizer files in scope
+- explicitly allowed shared contracts
+
+## Outputs
 - changed files
 - endpoint behavior
-- risk/compression assumptions
+- risk or compression assumptions
+
+## Rules
+- no database writes
+- no dashboard logic
+- prefer safe heuristic compression first
+
+## Token Policy
+- read only optimizer files in scope and explicitly allowed shared contracts
+- do not read proxy or dashboard files by default
+
+## Workflow
+1. read handoff
+2. read active phase
+3. read scoped optimizer files
+4. implement one bounded optimizer concern
+5. validate endpoint behavior
+6. return assumptions
+
+## Output format
+- changed files
+- endpoint behavior
+- risk or compression assumptions

@@ -1,25 +1,51 @@
 # PromptShield OpenCode Rules
 
-## Scope
-- Work only inside this repository.
-- Start with `memory/HANDOFF.md` and `docs/phases/ACTIVE.md`.
-- Do not scan the entire repo unless the task explicitly requires it.
-- Prefer narrow file reads and bounded edits.
-- Keep changes scoped to one app or one package at a time.
-- Do not modify real `.env` files.
-- Do not widen scope without stating why.
-
-## Repo shape
-- `apps/` contains deployable apps
-- `packages/` contains shared TypeScript packages
-- `services/` contains sidecar services
-- `memory/` contains handoff/state files
-- `docs/phases/` contains bounded implementation phases
-- `packages/*/AGENT.md`, `apps/*/AGENT.md`, and `services/*/AGENT.md` should be treated as local sub-area instructions when you work in those folders
-
-## Execution order
+## Execution Order
 1. Read `memory/HANDOFF.md`
 2. Read `docs/phases/ACTIVE.md`
-3. Read only files named by the current phase
-4. Implement the smallest useful change
-5. Validate only what changed
+3. Read only the local `AGENT.md` for the active area
+4. Read only files in current scope
+5. Execute the smallest useful step
+6. Validate
+7. Update handoff and task board
+
+## Scope Rules
+- no full repo scans unless the task explicitly requires one
+- no multi-module implementation phases
+- split if `>3 files`
+- split if `>1 module`
+- do not load unrelated local `AGENT.md` files
+- do not modify files outside active scope
+
+## Workflow Roles
+- Controller: classify and route
+- Planner: define one atomic phase
+- Implementation: execute scoped phase
+- Review: validate scoped phase
+- Refactor: reduce token waste without changing behavior
+
+## Memory Rules
+- update `memory/HANDOFF.md` after each completed phase
+- update `memory/TASK_BOARD.md` on each phase start and finish
+- keep `memory/CURRENT_STATE.md` architectural only
+- keep `memory/NEXT_STEPS.md` sequenced only
+- keep `memory/DECISIONS.md` for durable decisions only
+
+## Phase Rules
+Every active phase must include:
+- Goal
+- Files in scope
+- Do not touch
+- Tasks
+- Constraints
+- Acceptance criteria
+- Validation
+- Exit condition
+
+## Completion Rules
+A phase is complete only when:
+- acceptance criteria pass
+- listed validation has been run
+- handoff is updated
+- task board is updated
+- next steps are still correct
