@@ -5,6 +5,7 @@ phase: Phase 01G
 status: active
 
 ## Last completed action
+- Phase M-01 completed: `memory/CURRENT_STATE.md` synchronized to current public branch truth
 - Retroactive reconciliation completed: Phases 06A, 06C, 01F-A, 02A, 02B, 03A, 03B, 02C, 02D, 04A, 05A, and 05B were retroactively closed after review
 - Phase 04B was reviewed as partial and left open
 - Phase 05C was reviewed as blocked and left open
@@ -27,6 +28,7 @@ status: active
 - `packages/db/src/index.ts`
 
 ## Validation
+- Manual consistency review completed: `memory/CURRENT_STATE.md` checked against `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`, `memory/NEXT_STEPS.md`, `memory/DECISIONS.md`, and `opencode.json`
 - Consistency review completed now for Phases 06A, 06C, 05A, and 05B
 - Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
 - Validation rerun now: `pnpm --filter @promptshield/proxy test`

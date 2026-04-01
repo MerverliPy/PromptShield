@@ -18,6 +18,7 @@ status: active
 - Phase 05C local validation blocker: `pytest services/optimizer/tests -q` -> `pytest: command not found`
 
 ## DONE_THIS_WEEK
+- M-01 closed: `memory/CURRENT_STATE.md` synchronized to current public branch truth
 - Retroactively closed after review: 06A, 06C, 01F-A, 02A, 02B, 03A, 03B, 02C, 02D, 04A, 05A, 05B
 - Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
 - Validation rerun now: `pnpm --filter @promptshield/proxy test`
