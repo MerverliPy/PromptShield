@@ -1,13 +1,11 @@
 export type { Message, MessageRole } from "@promptshield/contracts/messages";
 export type {
-  ApiRoute,
-  DecisionKind,
-  OptimizationAction,
-  RequestEvent,
-  SavingsRecord,
-  SavingsSource,
-  Workspace,
-} from "@promptshield/contracts/durable";
+  Recommendation,
+  RecommendationPriority,
+  RecommendationRequest,
+  RecommendationResponse,
+  RecommendationType,
+} from "@promptshield/contracts/recommendations";
 export type {
   ProxyChatBudget,
   ProxyChatDecision,
