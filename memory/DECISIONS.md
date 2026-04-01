@@ -24,3 +24,8 @@ status: active
 ## D-005: Root agent plus thin local agent deltas
 - Reason: preserve scope control without repeating boilerplate
 - Impact: local `AGENT.md` files stay short but must still include scope, rules, workflow, and token policy
+
+## D-006: Python owns optimizer HTTP runtime
+- Reason: one runtime must own `/optimize` to avoid split authority between TypeScript and Python surfaces
+- Impact: `services/optimizer` is the durable HTTP authority for optimizer requests
+- Impact: TypeScript recommendation surfaces remain helper-only contract and orchestration layers unless explicitly retired later

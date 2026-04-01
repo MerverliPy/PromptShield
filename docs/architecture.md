@@ -16,11 +16,12 @@ PromptShield has four runtime surfaces:
    - event emission
 
 3. **Optimizer**
-   - Python service
-   - request classification
-   - context compression
-   - quality-risk scoring
-   - recommendation generation
+    - Python service
+    - owns the optimizer HTTP boundary, including `/optimize`
+    - request classification
+    - context compression
+    - quality-risk scoring
+    - recommendation generation
 
 4. **Worker**
    - async jobs for analytics enrichment, policy recommendations, anomaly checks
@@ -63,6 +64,7 @@ Purpose: background jobs only.
 ### `services/optimizer`
 Purpose: AI sidecar.
 - `app/api/` FastAPI routes
+- owns `/optimize` and other optimizer HTTP endpoints
 - `app/services/` classifier, compressor, risk
 - `app/schemas/` request and response models
 
@@ -91,6 +93,7 @@ Purpose: shared presentational primitives only.
 - Proxy never imports dashboard code.
 - Policy package has no network or database calls.
 - Optimizer returns structured outputs; it does not mutate database state directly.
+- Python is the only optimizer HTTP authority; TypeScript recommendation surfaces are helper-only and do not own `/optimize`.
 - Worker writes aggregates and recommendations; it does not sit in the request path.
 
 ## Token-efficiency rules

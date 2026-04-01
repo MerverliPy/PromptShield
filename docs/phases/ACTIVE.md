@@ -1,48 +1,47 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01F — Proxy lineage event emit seam
+Phase 01G — DB lineage event durable write seam
 
 ## Goal
-Add a bounded proxy-side emission seam that accepts the typed lineage event payload shell for later persistence or worker delivery.
+Add a bounded db-side durable write seam for the typed lineage event payload shell so proxy emission can later persist through one explicit storage boundary.
 
 ## Files in scope
-- `apps/proxy/src/lib/build-lineage-event.ts`
-- `apps/proxy/src/lib/emit-lineage-event.ts`
-- `apps/proxy/src/routes/chat-completions.ts`
+- `packages/db/src/write-lineage-event.ts`
+- `packages/db/src/write-lineage-event.test.ts`
+- `packages/db/src/index.ts`
 
 ## Do not touch
-- `packages/db/**`
+- `apps/proxy/**`
 - `packages/policy/**`
 - `apps/dashboard/**`
 - `apps/worker/**`
 - `services/**`
 - `docs/**`
-- `memory/**`
+- `memory/**` during implementation, except post-validation updates to `memory/HANDOFF.md` and `memory/TASK_BOARD.md` required for phase close
 
 ## Tasks
-1. Add `emit-lineage-event.ts` as a local proxy emission seam.
-2. Invoke the emission seam from `chat-completions.ts` with the typed payload shell.
-3. Keep the seam bounded to local logging or no-op behavior only.
-4. Preserve deterministic route behavior and existing request handling.
+1. Add `write-lineage-event.ts` as a bounded db-side durable write seam.
+2. Export the seam through `packages/db/src/index.ts`.
+3. Cover the seam with a focused db-side test.
+4. Keep the seam bounded to local persistence only.
 
 ## Constraints
-- control-plane seam only
-- no database writes
-- no queue or client integration
-- keep route handlers thin
+- database write seam only
+- no proxy route changes
+- no queue or worker integration
+- keep the seam local to `packages/db`
 - no broad refactor
 - no contract churn
 
 ## Acceptance criteria
-- proxy route maps normalized request plus decision into typed lineage payload shell
-- proxy route invokes a local emission seam with that payload
+- `packages/db` exposes one bounded durable write seam for the typed lineage payload shell
+- the durable seam is covered by a focused db-side test
 - no changes occur outside listed files
 
 ## Validation
-- `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
-- `pnpm --filter @promptshield/proxy test`
-- `git diff -- apps/proxy/src/lib/build-lineage-event.ts apps/proxy/src/lib/emit-lineage-event.ts apps/proxy/src/routes/chat-completions.ts`
+- `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- `git diff -- packages/db/src/write-lineage-event.ts packages/db/src/write-lineage-event.test.ts packages/db/src/index.ts`
 
 ## Exit condition
 - acceptance criteria pass

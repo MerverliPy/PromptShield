@@ -1,8 +1,8 @@
 import { DashboardShell } from "../components/dashboard-shell";
-import { getMockDashboardViewModel } from "../lib/mock-data";
+import { getDashboardViewModel } from "../lib/get-dashboard-view-model";
 
 export default function HomePage() {
-  const dashboard = getMockDashboardViewModel();
+  const dashboard = getDashboardViewModel();
 
   return <DashboardShell dashboard={dashboard} />;
 }

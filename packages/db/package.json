@@ -1,0 +1,13 @@
+{
+  "name": "@promptshield/db",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/lineage-writes.ts",
+    "./dashboard-read-model": "./src/dashboard-read-model.ts"
+  },
+  "dependencies": {
+    "@promptshield/contracts": "workspace:^"
+  }
+}

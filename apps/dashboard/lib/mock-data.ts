@@ -1,6 +1,6 @@
 import type { DashboardViewModel } from "./view-models";
 
-export function getMockDashboardViewModel(): DashboardViewModel {
+export function getFallbackDashboardViewModel(): DashboardViewModel {
   return {
     eyebrow: "PromptShield",
     title: "Recovered margin, not token noise.",

@@ -1,6 +1,6 @@
 ---
 description: Bootstrap PromptShield for OpenCode
-agent: plan
+agent: planner
 subtask: false
 model: openai/gpt-5.4-mini
 ---
