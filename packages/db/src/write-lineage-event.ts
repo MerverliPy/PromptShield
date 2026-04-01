@@ -7,6 +7,19 @@ import type {
   SavingsRecordWrite,
 } from "./lineage-writes";
 
+export type ProxyPersistedActionWrite = Omit<OptimizationActionWrite, "requestEventId">;
+
+export type ProxyPersistedSavingsWrite = Omit<
+  SavingsRecordWrite,
+  "requestEventId" | "optimizationActionId"
+>;
+
+export type ProxyPersistedLineageWrite = {
+  request: RequestEventWrite;
+  action?: ProxyPersistedActionWrite;
+  savings?: ProxyPersistedSavingsWrite;
+};
+
 export interface LineageEventWriteAdapter {
   writeRequestEvent(request: RequestEventWrite): Promise<LineageWriteResult["request"]>;
   writeOptimizationAction?(
@@ -31,6 +44,38 @@ export async function writeLineageEvent(
 
   return {
     request,
+    ...(action ? { action } : {}),
+    ...(savings ? { savings } : {}),
+  };
+}
+
+export async function writeProxyLineageEvent(
+  adapter: LineageEventWriteAdapter,
+  input: ProxyPersistedLineageWrite,
+): Promise<LineageWriteResult> {
+  const request = await writeLineageEvent(adapter, { request: input.request });
+  const action = input.action
+    ? await requireActionWriter(adapter).writeOptimizationAction({
+        requestEventId: request.request.id,
+        actionType: input.action.actionType,
+        beforeValue: input.action.beforeValue,
+        afterValue: input.action.afterValue,
+        reason: input.action.reason,
+      })
+    : undefined;
+  const savings = input.savings
+    ? await requireSavingsWriter(adapter).writeSavingsRecord({
+        requestEventId: request.request.id,
+        optimizationActionId: requireActionResult(action).id,
+        grossCostUsd: input.savings.grossCostUsd,
+        optimizedCostUsd: input.savings.optimizedCostUsd,
+        realizedSavingsUsd: input.savings.realizedSavingsUsd,
+        source: input.savings.source,
+      })
+    : undefined;
+
+  return {
+    request: request.request,
     ...(action ? { action } : {}),
     ...(savings ? { savings } : {}),
   };
@@ -62,4 +107,14 @@ function requireSavingsWriter(
   }
 
   return { writeSavingsRecord: adapter.writeSavingsRecord };
+}
+
+function requireActionResult(
+  action: LineageWriteResult["action"],
+): NonNullable<LineageWriteResult["action"]> {
+  if (!action) {
+    throw new Error("A persisted optimization action is required for savings writes");
+  }
+
+  return action;
 }

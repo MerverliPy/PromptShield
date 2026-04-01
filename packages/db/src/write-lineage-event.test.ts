@@ -6,8 +6,10 @@ import { test } from "node:test";
 import type { LineageWrite } from "./lineage-writes";
 import {
   createLineageEventStore,
+  writeProxyLineageEvent,
   writeLineageEvent,
   type LineageEventWriteAdapter,
+  type ProxyPersistedLineageWrite,
 } from "./write-lineage-event";
 
 const requestWrite: LineageWrite["request"] = {
@@ -37,6 +39,22 @@ const savingsWrite: NonNullable<LineageWrite["savings"]> = {
   optimizedCostUsd: 0.08,
   realizedSavingsUsd: 0.06,
   source: "routing",
+};
+
+const proxyPersistedWrite: ProxyPersistedLineageWrite = {
+  request: requestWrite,
+  action: {
+    actionType: "route-model",
+    beforeValue: 10,
+    afterValue: 6,
+    reason: "Matched cheaper safe model",
+  },
+  savings: {
+    grossCostUsd: 0.14,
+    optimizedCostUsd: 0.08,
+    realizedSavingsUsd: 0.06,
+    source: "routing",
+  },
 };
 
 test("writeLineageEvent writes the request, action, and savings in order", async () => {
@@ -125,6 +143,81 @@ test("createLineageEventStore preserves the LineageStore contract for request-on
       id: "request-event-2",
       createdAt: "2026-04-01T00:00:03.000Z",
       ...requestWrite,
+    },
+  });
+});
+
+test("writeProxyLineageEvent derives request and action ids inside the db seam", async () => {
+  const calls: Array<{ step: string; payload: unknown }> = [];
+
+  const adapter: LineageEventWriteAdapter = {
+    async writeRequestEvent(request) {
+      calls.push({ step: "request", payload: request });
+
+      return {
+        id: "request-event-5",
+        createdAt: "2026-04-01T00:00:07.000Z",
+        ...request,
+      };
+    },
+    async writeOptimizationAction(action) {
+      calls.push({ step: "action", payload: action });
+
+      return {
+        id: "action-5",
+        createdAt: "2026-04-01T00:00:08.000Z",
+        ...action,
+      };
+    },
+    async writeSavingsRecord(savings) {
+      calls.push({ step: "savings", payload: savings });
+
+      return {
+        id: "savings-5",
+        createdAt: "2026-04-01T00:00:09.000Z",
+        ...savings,
+      };
+    },
+  };
+
+  const result = await writeProxyLineageEvent(adapter, proxyPersistedWrite);
+
+  assert.deepEqual(calls, [
+    { step: "request", payload: requestWrite },
+    {
+      step: "action",
+      payload: {
+        requestEventId: "request-event-5",
+        ...proxyPersistedWrite.action,
+      },
+    },
+    {
+      step: "savings",
+      payload: {
+        requestEventId: "request-event-5",
+        optimizationActionId: "action-5",
+        ...proxyPersistedWrite.savings,
+      },
+    },
+  ]);
+  assert.deepEqual(result, {
+    request: {
+      id: "request-event-5",
+      createdAt: "2026-04-01T00:00:07.000Z",
+      ...requestWrite,
+    },
+    action: {
+      id: "action-5",
+      createdAt: "2026-04-01T00:00:08.000Z",
+      requestEventId: "request-event-5",
+      ...proxyPersistedWrite.action,
+    },
+    savings: {
+      id: "savings-5",
+      createdAt: "2026-04-01T00:00:09.000Z",
+      requestEventId: "request-event-5",
+      optimizationActionId: "action-5",
+      ...proxyPersistedWrite.savings,
     },
   });
 });
