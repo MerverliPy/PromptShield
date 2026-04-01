@@ -1,51 +1,50 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01J — DB durable dashboard summary read model
+Phase 04B — Dashboard durable summary consumption
 
 ## Goal
-Add a durable executor-backed dashboard summary read model in `packages/db` that summarizes persisted request, action, and savings records through one explicit db-side boundary.
+Replace the dashboard static preview summary path in `apps/dashboard/lib/get-dashboard-view-model.ts` with durable db-backed reads while preserving the explicit fallback path.
 
 ## Files in scope
-- `packages/db/src/dashboard-read-model.ts`
-- `packages/db/src/dashboard-read-model.test.ts`
-- `packages/db/src/index.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.test.ts`
 
 ## Do not touch
 - `apps/proxy/**`
+- `packages/db/**`
 - `packages/policy/**`
-- `apps/dashboard/**`
+- `apps/dashboard/app/**`
+- `apps/dashboard/components/**`
 - `apps/worker/**`
 - `services/**`
 - `docs/**`
 - `memory/**` during implementation, except post-validation updates to `memory/HANDOFF.md` and `memory/TASK_BOARD.md` required for phase close
 
 ## Tasks
-1. Add an executor-backed dashboard summary read model in `packages/db`.
-2. Summarize persisted request, action, and savings data through one explicit db read seam.
-3. Export the read model through `packages/db/src/index.ts`.
-4. Cover the read model with focused db-side tests.
+1. Replace the source-relative static preview summary wrapper in `apps/dashboard/lib/get-dashboard-view-model.ts`.
+2. Read dashboard summary data through one explicit db-backed seam.
+3. Preserve the explicit fallback path when durable reads are unavailable.
+4. Add focused dashboard-side coverage if needed within the listed scope.
 
 ## Constraints
-- database read-model implementation only
 - no proxy route changes
-- no dashboard implementation changes
+- dashboard consumption only
+- no db implementation changes
 - no queue or worker integration
-- keep the seam local to `packages/db`
-- no real driver wiring outside the injected executor boundary
+- preserve the fallback path introduced in Phase 04A
 - no broad refactor
 - no contract churn
 
 ## Acceptance criteria
-- `packages/db` exposes one durable executor-backed dashboard summary read model behind an injected local boundary
-- the read model summarizes persisted request/action/savings records through one explicit db seam
-- the read model is covered by focused db-side tests
+- `apps/dashboard/lib/get-dashboard-view-model.ts` no longer wraps a static preview summary
+- dashboard reads through one explicit db-backed summary seam while preserving fallback behavior
+- any dashboard-side coverage added remains within the listed scope
 - no changes occur outside listed files
 
 ## Validation
-- `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
-- `pnpm --filter @promptshield/db test`
-- `git diff -- packages/db/src/dashboard-read-model.ts packages/db/src/dashboard-read-model.test.ts packages/db/src/index.ts`
+- `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- `git diff -- apps/dashboard/lib/get-dashboard-view-model.ts apps/dashboard/lib/get-dashboard-view-model.test.ts`
 
 ## Exit condition
 - acceptance criteria pass

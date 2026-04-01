@@ -47,6 +47,7 @@ export function buildLineageEventPayload(input: {
   const servedModel = input.decision.targetModel ?? requestModel;
   const budget = "budget" in input.decision ? input.decision.budget : undefined;
   const priority = "priority" in input.decision ? input.decision.priority : undefined;
+  const requestedCostUsd = budget?.estimatedCostUsd ?? 0;
 
   return {
     request: {
@@ -54,7 +55,7 @@ export function buildLineageEventPayload(input: {
       decisionKind: input.decision.kind,
       modelRequested: requestModel,
       modelServed: servedModel,
-      estimatedCostUsd: budget?.estimatedCostUsd ?? 0,
+      estimatedCostUsd: requestedCostUsd,
       requestCeilingUsd: budget?.requestCeilingUsd ?? null,
       overBudget: budget?.overBudget ?? null,
       priority: priority ?? null,
@@ -62,7 +63,7 @@ export function buildLineageEventPayload(input: {
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([key, value]) => ({ key, value })),
     },
-    action: buildActionShell(input.decision),
+    action: buildActionShell(input.decision, requestedCostUsd),
     lineage: {
       requestEventId: input.decision.lineage?.requestEventId,
       actionId: input.decision.lineage?.actionId,
@@ -70,18 +71,12 @@ export function buildLineageEventPayload(input: {
   };
 }
 
-function buildActionShell(decision: ProxyChatDecision): ProxyLineageEventPayload["action"] {
-  if (decision.kind === "allow") {
+function buildActionShell(
+  decision: ProxyChatDecision,
+  requestedCostUsd: number,
+): ProxyLineageEventPayload["action"] {
+  if (decision.kind === "allow" || decision.kind === "downgrade") {
     return null;
-  }
-
-  if (decision.kind === "downgrade") {
-    return {
-      actionType: "model_reroute",
-      reason: decision.reason,
-      beforeValue: decision.budget.estimatedCostUsd,
-      afterValue: decision.budget.estimatedCostUsd,
-    };
   }
 
   return {
