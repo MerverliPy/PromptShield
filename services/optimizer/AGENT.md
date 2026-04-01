@@ -1,7 +1,7 @@
 # Optimizer Agent
 
 ## Role
-Implement classification, compression, and risk scoring behind a stable HTTP boundary.
+Implement helper logic for the Python-owned optimizer HTTP boundary.
 
 ## Scope
 Allowed:
@@ -16,7 +16,8 @@ Forbidden:
 - return structured JSON only
 - preserve protected sections
 - keep compression conservative
-- keep runtime boundary stable
+- keep the Python runtime boundary stable
+- treat any local TypeScript surface as transitional helper code, not peer runtime authority
 
 ## Inputs
 - active phase

@@ -1,13 +1,13 @@
 import type {
-  Recommendation,
-  RecommendationRequest,
-  RecommendationResponse,
+  HeuristicRecommendation,
+  HeuristicRecommendationRequest,
+  HeuristicRecommendationResponse,
 } from "@promptshield/contracts/recommendations";
 
-export function buildRecommendations(
-  input: RecommendationRequest,
-): RecommendationResponse {
-  const recommendations: Recommendation[] = [];
+export function buildHeuristicRecommendations(
+  input: HeuristicRecommendationRequest,
+): HeuristicRecommendationResponse {
+  const recommendations: HeuristicRecommendation[] = [];
 
   if (input.promptTokens > 12_000) {
     recommendations.push({
@@ -40,3 +40,5 @@ export function buildRecommendations(
 
   return { recommendations };
 }
+
+export const buildRecommendations = buildHeuristicRecommendations;

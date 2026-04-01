@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./dashboard": "./src/dashboard.ts",
     "./durable": "./src/durable.ts",
     "./events": "./src/events.ts",
     "./messages": "./src/messages.ts",

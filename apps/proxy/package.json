@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@promptshield/contracts": "workspace:^",
+    "@promptshield/db": "workspace:^",
     "@promptshield/policy": "workspace:^",
     "fastify": "^5.8.4"
   }

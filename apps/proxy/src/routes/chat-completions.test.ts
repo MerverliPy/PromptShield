@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import Fastify from "fastify";
 import { evaluateRequest } from "@promptshield/policy/index";
 import { buildLineageEventPayload } from "../lib/build-lineage-event";
+import { emitLineageEvent } from "../lib/emit-lineage-event";
 import { normalizeOpenAIChatRequest } from "../lib/openai-normalize";
 import { registerChatCompletionsRoute } from "./chat-completions";
 
@@ -217,4 +218,52 @@ test("buildLineageEventPayload is deterministic for equivalent inputs", () => {
   });
 
   assert.deepEqual(firstEvent, secondEvent);
+});
+
+test("emitLineageEvent logs the typed lineage payload locally", () => {
+  const normalized = normalizeOpenAIChatRequest({
+    model: "gpt-4.1",
+    messages: [{ role: "user", content: "Draft a detailed response." }],
+    max_tokens: 900,
+    metadata: {
+      workspace: "acme",
+      request_ceiling_usd: "0.01",
+    },
+  });
+
+  assert.equal(normalized.ok, true);
+
+  if (!normalized.ok) {
+    return;
+  }
+
+  const payload = buildLineageEventPayload({
+    request: normalized.value,
+    decision: evaluateRequest(normalized.value),
+  });
+
+  assert.notEqual(payload, null);
+
+  if (!payload) {
+    return;
+  }
+
+  const calls: Array<{ payload: unknown; message: string | undefined }> = [];
+
+  emitLineageEvent({
+    payload,
+    log: {
+      debug(...args: unknown[]) {
+        const [payload, message] = args as [unknown, string | undefined];
+        calls.push({ payload, message });
+      },
+    },
+  });
+
+  assert.deepEqual(calls, [
+    {
+      payload: { lineageEvent: payload },
+      message: "Proxy lineage event payload shell",
+    },
+  ]);
 });

@@ -28,6 +28,7 @@
 - update `memory/HANDOFF.md` after each completed phase
 - update `memory/TASK_BOARD.md` on each phase start and finish
 - keep `memory/CURRENT_STATE.md` architectural only
+- keep `memory/HANDOFF.md` and `memory/TASK_BOARD.md` for operational progress tracking
 - keep `memory/NEXT_STEPS.md` sequenced only
 - keep `memory/DECISIONS.md` for durable decisions only
 

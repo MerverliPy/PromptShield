@@ -18,6 +18,8 @@ pnpm dev:dashboard
 
 No `.env` file is required for the current quick start. See `.env.example` for the current local defaults.
 
+The current quick start does not start the optimizer runtime. Optimizer HTTP ownership belongs to the Python service in `services/optimizer`; any TypeScript surface in that folder is transitional helper code.
+
 ## Repo layout
 
 ```text
@@ -26,7 +28,7 @@ apps/
   proxy/       OpenAI-compatible gateway
   worker/      async analytics and recommendation jobs
 services/
-  optimizer/   Python sidecar for classification/compression/risk
+  optimizer/   Python-owned optimizer runtime; TS helper surface is transitional
 packages/
   contracts/   shared contracts
   policy/      deterministic routing and budget logic

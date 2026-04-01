@@ -1,9 +1,9 @@
 import Fastify from "fastify";
 import type {
-  RecommendationRequest,
-  RecommendationResponse,
+  HeuristicRecommendationRequest,
+  HeuristicRecommendationResponse,
 } from "@promptshield/contracts/recommendations";
-import { buildRecommendations } from "./lib/build-recommendations";
+import { buildHeuristicRecommendations } from "./lib/build-recommendations";
 
 type HealthResponse = {
   ok: true;
@@ -14,7 +14,7 @@ type ErrorResponse = {
   error: string;
 };
 
-export function buildServer() {
+export function buildRecommendationHelperServer() {
   const app = Fastify({ logger: true });
 
   app.get("/health", async (): Promise<HealthResponse> => {
@@ -22,8 +22,8 @@ export function buildServer() {
   });
 
   app.post<{
-    Body: RecommendationRequest;
-    Reply: RecommendationResponse | ErrorResponse;
+    Body: HeuristicRecommendationRequest;
+    Reply: HeuristicRecommendationResponse | ErrorResponse;
   }>("/recommendations", async (request, reply) => {
     const body = request.body;
 
@@ -42,7 +42,7 @@ export function buildServer() {
       return { error: "promptTokens must be a number" };
     }
 
-    const normalized: RecommendationRequest = {
+    const normalized: HeuristicRecommendationRequest = {
       modelRequested: body.modelRequested,
       promptTokens: body.promptTokens,
       completionTokens: body.completionTokens,
@@ -51,16 +51,21 @@ export function buildServer() {
     };
 
     reply.code(200);
-    return buildRecommendations(normalized);
+    return buildHeuristicRecommendations(normalized);
   });
 
   return app;
 }
 
+export const buildServer = buildRecommendationHelperServer;
+
 const port = Number(process.env.PORT ?? 4003);
 
-if (process.env.NODE_ENV !== "test") {
-  const app = buildServer();
+if (
+  process.env.NODE_ENV !== "test" &&
+  process.env.ENABLE_TRANSITIONAL_RECOMMENDATION_HELPER === "true"
+) {
+  const app = buildRecommendationHelperServer();
 
   app
     .listen({ host: "0.0.0.0", port })
