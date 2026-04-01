@@ -1,15 +1,15 @@
 # HANDOFF
 
 Last completed action:
-- Phase 01B lineage foundation completed (schema + contracts alignment baseline).
+- Phase 01C durable lineage contract alignment completed.
 
 Current state:
-- Control-plane docs are synced to the current repo baseline.
-- Durable lineage foundation exists across request/action/savings schema and related contracts.
-- Runtime surfaces are runnable with clean workspace/env hygiene.
+- Durable lineage contracts now match schema, including savings linkage to optimization actions.
+- Event exports are simplified while keeping compatibility aliases used by proxy/worker surfaces.
+- Runtime surfaces remain runnable with clean workspace/env hygiene.
 
 Next immediate step:
-- Execute Phase 01C from `docs/phases/ACTIVE.md`.
+- Execute the active dashboard shell phase from `docs/phases/ACTIVE.md`.
 - Build dashboard shell placeholders and view-model wiring in scoped dashboard files only.
 - Validate with dashboard typecheck + local dev load check.
 
