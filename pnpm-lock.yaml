@@ -38,12 +38,22 @@ importers:
       react-dom:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
 
   apps/proxy:
     dependencies:
       '@promptshield/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@promptshield/policy':
+        specifier: workspace:^
+        version: link:../../packages/policy
       fastify:
         specifier: ^5.8.4
         version: 5.8.4
@@ -58,7 +68,15 @@ importers:
         specifier: workspace:^
         version: link:../contracts
 
-  packages/ui: {}
+  packages/ui:
+    dependencies:
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
 
 packages:
 

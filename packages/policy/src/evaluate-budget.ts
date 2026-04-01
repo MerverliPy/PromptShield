@@ -1,14 +1,22 @@
-import type { ProxyDecision } from "@promptshield/contracts/proxy";
-import type { BudgetInput } from "./types";
+import type { BudgetAssessment, BudgetInput } from "./types";
 
-export function evaluateBudget(input: BudgetInput): ProxyDecision {
+export function evaluateBudget(input: BudgetInput): BudgetAssessment {
   if (input.estimatedCostUsd <= input.requestCeilingUsd) {
-    return { kind: "pass_through", reason: "within_request_budget" };
+    return {
+      estimatedCostUsd: input.estimatedCostUsd,
+      requestCeilingUsd: input.requestCeilingUsd,
+      overBudget: false,
+      reason: "within_request_budget",
+    };
   }
 
-  if (input.priority === "critical") {
-    return { kind: "reject", reason: "critical_request_exceeds_budget_without_safe_downgrade" };
-  }
-
-  return { kind: "reroute", reason: "request_exceeds_budget_and_is_downgrade_eligible", targetModel: "budget_fallback" };
+  return {
+    estimatedCostUsd: input.estimatedCostUsd,
+    requestCeilingUsd: input.requestCeilingUsd,
+    overBudget: true,
+    reason:
+      input.priority === "critical"
+        ? "critical_request_exceeds_budget"
+        : "request_exceeds_budget",
+  };
 }
