@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "openai/gpt-5.4",
   "small_model": "openai/gpt-5.4-mini",
-  "default_agent": "build",
+  "default_agent": "controller",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -13,21 +13,44 @@
     "reserved": 12000
   },
   "instructions": [
+    "AGENTS.md",
     "memory/HANDOFF.md",
-    "docs/phases/ACTIVE.md",
-    "packages/*/AGENT.md",
-    "apps/*/AGENT.md",
-    "services/*/AGENT.md"
+    "docs/phases/ACTIVE.md"
   ],
   "agent": {
-    "build": {
-      "model": "openai/gpt-5.4"
-    },
-    "plan": {
+    "controller": {
       "model": "openai/gpt-5.4-mini",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "planner": {
+      "model": "openai/gpt-5.4-mini",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "implementation": {
+      "model": "openai/gpt-5.4",
       "permission": {
         "edit": "ask",
         "bash": "ask"
+      }
+    },
+    "review": {
+      "model": "openai/gpt-5.4-mini",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "refactor": {
+      "model": "openai/gpt-5.4-mini",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
       }
     }
   }
