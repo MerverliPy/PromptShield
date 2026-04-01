@@ -1,7 +1,21 @@
+export type RecommendationType = "downgrade" | "compress" | "no_change";
+
+export type RecommendationPriority = "low" | "standard" | "high";
+
+export type RecommendationRequest = {
+  modelRequested: string;
+  promptTokens: number;
+  completionTokens?: number;
+  route?: string;
+  priority?: RecommendationPriority;
+};
+
 export type Recommendation = {
-  workspaceId: string;
-  kind: "routing" | "compression" | "policy";
-  title: string;
-  rationale: string;
-  estimatedMonthlySavingsUsd: number;
+  type: RecommendationType;
+  reason: string;
+  suggestedModel?: string;
+};
+
+export type RecommendationResponse = {
+  recommendations: Recommendation[];
 };
