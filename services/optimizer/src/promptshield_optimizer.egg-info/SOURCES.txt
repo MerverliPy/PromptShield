@@ -1,7 +1,0 @@
-pyproject.toml
-src/promptshield_optimizer.egg-info/PKG-INFO
-src/promptshield_optimizer.egg-info/SOURCES.txt
-src/promptshield_optimizer.egg-info/dependency_links.txt
-src/promptshield_optimizer.egg-info/requires.txt
-src/promptshield_optimizer.egg-info/top_level.txt
-tests/test_api.py
