@@ -16,6 +16,8 @@ pnpm dev:proxy
 pnpm dev:dashboard
 ```
 
+No `.env` file is required for the current quick start. See `.env.example` for the current local defaults.
+
 ## Repo layout
 
 ```text

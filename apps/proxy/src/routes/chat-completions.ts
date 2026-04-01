@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { ProxyChatDecision } from "@promptshield/contracts/proxy";
 import { evaluateRequest } from "@promptshield/policy/index";
+import { buildLineageEventPayload } from "../lib/build-lineage-event";
 import {
   normalizeOpenAIChatRequest,
   type OpenAIChatCompletionRequest,
@@ -22,7 +23,28 @@ export function registerChatCompletionsRoute(app: FastifyInstance) {
         };
       }
 
-      return evaluateRequest(normalized.value);
+      const decision = evaluateRequest(normalized.value);
+      const requestId = normalized.value.lineage?.requestId;
+      const lineageEvent = buildLineageEventPayload({
+        request: normalized.value,
+        decision,
+      });
+
+      if (lineageEvent) {
+        request.log.debug({ lineageEvent }, "Proxy lineage event payload shell");
+      }
+
+      if (!requestId) {
+        return decision;
+      }
+
+      return {
+        ...decision,
+        lineage: {
+          ...decision.lineage,
+          requestId,
+        },
+      };
     },
   );
 }

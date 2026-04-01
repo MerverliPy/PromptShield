@@ -1,8 +1,7 @@
 # NEXT_STEPS
 
-1. Complete Phase 01A proxy ingress foundation.
-2. Add durable event and savings lineage tables in `packages/db/schema.sql`.
-3. Build the dashboard shell with spend, savings, and recent request placeholders.
-4. Implement deterministic policy evaluation in `packages/policy/**`.
-5. Add optimizer request classification, compression, and risk scoring.
-6. Add worker jobs for analytics enrichment and recommendation generation.
+1. Execute Phase 01F in `docs/phases/ACTIVE.md` (proxy lineage event emit seam).
+2. Wire proxy lineage event payload shell into a durable emit path (no-op shell exists; persistence/queue path still pending).
+3. Expand deterministic policy rules and reasons in `packages/policy/**`.
+4. Wire worker analytics/recommendation jobs to consume saved lineage events.
+5. Build dashboard spend/savings views on durable lineage records after proxy+worker wiring.

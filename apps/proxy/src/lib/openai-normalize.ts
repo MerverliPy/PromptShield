@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { Message } from "@promptshield/contracts/messages";
 import type {
   ProxyChatRequest,
@@ -48,8 +49,42 @@ export function normalizeOpenAIChatRequest(
         maxTokens,
       },
       tags,
+      lineage: {
+        requestId: buildDeterministicRequestId({
+          model,
+          messages,
+          temperature,
+          maxTokens,
+          tags,
+        }),
+      },
     },
   };
+}
+
+function buildDeterministicRequestId(input: {
+  model: string;
+  messages: Message[];
+  temperature: number;
+  maxTokens: number;
+  tags: Record<string, string>;
+}): string {
+  const payload = JSON.stringify({
+    model: input.model,
+    messages: input.messages.map((message) => ({
+      role: message.role,
+      content: message.content,
+    })),
+    controls: {
+      temperature: input.temperature,
+      maxTokens: input.maxTokens,
+    },
+    tags: Object.keys(input.tags)
+      .sort()
+      .map((key) => [key, input.tags[key]]),
+  });
+
+  return `req_${createHash("sha256").update(payload).digest("hex").slice(0, 32)}`;
 }
 
 function normalizeMessages(

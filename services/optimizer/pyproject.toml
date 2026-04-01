@@ -7,3 +7,9 @@ dependencies = [
   "uvicorn",
   "pydantic"
 ]
+
+[project.optional-dependencies]
+test = [
+  "httpx",
+  "pytest",
+]
