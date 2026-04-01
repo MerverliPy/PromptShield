@@ -42,6 +42,7 @@ export type OptimizationAction = {
 export type SavingsRecord = {
   id: string;
   requestEventId: string;
+  optimizationActionId: string;
   grossCostUsd: number;
   optimizedCostUsd: number;
   realizedSavingsUsd: number;

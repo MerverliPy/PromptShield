@@ -1,3 +1,12 @@
+import type {
+  ApiRoute,
+  DecisionKind,
+  OptimizationAction,
+  RequestEvent,
+  SavingsRecord,
+  Workspace,
+} from "@promptshield/contracts/durable";
+
 export type {
   ApiRoute,
   DecisionKind,
@@ -7,17 +16,15 @@ export type {
   Workspace,
 } from "@promptshield/contracts/durable";
 
-export type OptimizationActionEvent = import("@promptshield/contracts/durable").OptimizationAction;
-export type RequestEventRecord = import("@promptshield/contracts/durable").RequestEvent;
-export type SavingsRecordEvent = import("@promptshield/contracts/durable").SavingsRecord & {
-  optimizationActionId: OptimizationActionEvent["id"];
-};
+export type OptimizationActionEvent = OptimizationAction;
+export type RequestEventRecord = RequestEvent;
+export type SavingsRecordEvent = SavingsRecord;
 
 export type RequestActionLineageEvent = {
-  request: RequestEventRecord;
-  action: OptimizationActionEvent;
+  request: RequestEvent;
+  action: OptimizationAction;
 };
 
 export type RequestActionSavingsLineageEvent = RequestActionLineageEvent & {
-  savings: SavingsRecordEvent;
+  savings: SavingsRecord;
 };
