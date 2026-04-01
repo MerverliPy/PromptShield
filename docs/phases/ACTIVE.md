@@ -1,31 +1,37 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 00 — OpenCode bootstrap + runnable workspace baseline
+Phase 01B — Event schema and persistence foundation
 
 ## Goal
-Make the repo OpenCode-native and locally runnable without changing product logic.
+Add the first durable request/action/savings lineage schema and aligned event contract types without changing app runtime behavior.
 
 ## Files in scope
-- AGENTS.md
-- opencode.json
-- .opencode/agents/**
-- .opencode/commands/**
-- package.json
-- apps/*/package.json
-- packages/*/package.json
-- .env.example
+- packages/db/schema.sql
+- packages/contracts/src/events.ts
+- packages/contracts/src/proxy.ts
 
 ## Do not touch
-- apps/proxy/src/**
-- apps/dashboard/app/**
-- packages/policy/src/**
-- services/optimizer/app/**
-- packages/db/schema.sql
+- apps/**
+- services/**
+- packages/policy/**
+- packages/ui/**
+- docs/**
+- memory/**
+
+## Constraints
+- schema-first changes only
+- keep request/action/savings lineage explicit
+- no route-handler, UI, or worker logic edits
+- no broad refactor outside listed files
 
 ## Acceptance criteria
-- OpenCode loads project rules
-- OpenCode agents and commands exist
-- workspace install succeeds
-- proxy boots
-- GET /health returns ok
+- `packages/db/schema.sql` defines durable lineage tables for request, action, and savings relationships
+- `packages/contracts/src/events.ts` exports event types that map to the new lineage records
+- `packages/contracts/src/proxy.ts` stays aligned with event payload identifiers where needed
+- no app/service source files are changed
+
+## Validation
+- `pnpm --filter @promptshield/contracts typecheck`
+- verify schema includes explicit request -> action -> savings lineage keys
+- `git diff -- packages/db/schema.sql packages/contracts/src/events.ts packages/contracts/src/proxy.ts`
