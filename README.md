@@ -20,6 +20,20 @@ No `.env` file is required for the current quick start. See `.env.example` for t
 
 The current quick start does not start the optimizer runtime. Optimizer HTTP ownership belongs to the Python service in `services/optimizer`; any TypeScript surface in that folder is transitional helper code.
 
+## Optimizer command matrix
+
+- Root compatibility wrappers:
+  - `pnpm run typecheck:optimizer` -> TypeScript helper typecheck (`@promptshield/optimizer` `typecheck:helper`)
+  - `pnpm run test:optimizer` -> Python runtime validation (`@promptshield/optimizer` `test:python`)
+- Root explicit commands:
+  - `pnpm run typecheck:optimizer:helper` -> TypeScript helper typecheck
+  - `pnpm run test:optimizer:helper` -> TypeScript helper tests
+  - `pnpm run test:optimizer:python` -> Python runtime tests
+- Optimizer package scripts (`services/optimizer`):
+  - `pnpm --filter @promptshield/optimizer run typecheck:helper` -> helper-only TypeScript typecheck
+  - `pnpm --filter @promptshield/optimizer run test:helper` -> helper-only TypeScript tests
+  - `pnpm --filter @promptshield/optimizer run test:python` -> Python runtime validation
+
 ## Repo layout
 
 ```text

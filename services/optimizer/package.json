@@ -7,7 +7,10 @@
   "scripts": {
     "dev:helper": "tsx watch src/server.ts",
     "typecheck:helper": "tsc --noEmit",
-    "test:helper": "node --import tsx --test src/**/*.test.ts"
+    "test:helper": "node --import tsx --test src/*.test.ts",
+    "test:python": "python -m pytest tests -q",
+    "typecheck": "pnpm run typecheck:helper",
+    "test": "pnpm run test:python"
   },
   "dependencies": {
     "@promptshield/contracts": "workspace:*",

@@ -8,10 +8,13 @@
     "dev:proxy": "pnpm --dir apps/proxy dev",
     "dev:worker": "pnpm --dir apps/worker dev",
     "typecheck": "pnpm -r --if-present typecheck",
-    "typecheck:optimizer": "pnpm --filter @promptshield/optimizer typecheck",
+    "typecheck:optimizer": "pnpm --filter @promptshield/optimizer run typecheck:helper",
+    "typecheck:optimizer:helper": "pnpm --filter @promptshield/optimizer run typecheck:helper",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
-    "test:optimizer": "pnpm --filter @promptshield/optimizer test",
+    "test:optimizer": "pnpm --filter @promptshield/optimizer run test:python",
+    "test:optimizer:helper": "pnpm --filter @promptshield/optimizer run test:helper",
+    "test:optimizer:python": "pnpm --filter @promptshield/optimizer run test:python",
     "format": "pnpm -r --if-present format"
   },
   "devDependencies": {
