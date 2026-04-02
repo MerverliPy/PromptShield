@@ -1,10 +1,14 @@
 # HANDOFF
 
 updated_at: 2026-04-01
-phase: Phase 05C
-status: blocked
+phase: planning
+status: awaiting_next_phase
 
 ## Last completed action
+- Operational memory closeout completed: Phase 04B and Phase 05C are closed, their exact validation commands and results are recorded below, and `docs/phases/ACTIVE.md` no longer points at stale implementation instructions
+- Operational closeout files changed: `memory/HANDOFF.md`, `memory/TASK_BOARD.md`, and `docs/phases/ACTIVE.md`
+- Phase 05C completed: optimizer command naming now keeps Python runtime authority truthful, helper typecheck runs under the repo-aligned TypeScript toolchain, and optimizer docs now state the Python test-environment prerequisite explicitly
+- Phase 05C files changed: `README.md`, `services/optimizer/package.json`, and `pnpm-lock.yaml`
 - Phase 04B completed: dashboard now consumes durable lineage summaries through `@promptshield/db` with a sqlite-backed read seam and preserves explicit demo fallback behavior when durable reads are unavailable
 - Phase 04B files changed: `packages/db/src/sql-dashboard-read-model.ts`, `packages/db/src/sql-dashboard-read-model.test.ts`, `packages/db/src/index.ts`, `apps/dashboard/lib/get-dashboard-view-model.ts`, `apps/dashboard/lib/get-dashboard-view-model.test.ts`, and `apps/dashboard/package.json`
 - Phase 01J completed: proxy lineage payloads now omit misleading downgrade action values when no truthful post-route value can be derived, while keeping reject and allow action semantics truthful
@@ -17,8 +21,8 @@ status: blocked
 - Phase 01G files changed: `packages/db/src/write-lineage-event.ts`, `packages/db/src/write-lineage-event.test.ts`, `packages/db/src/index.ts`, and `packages/db/package.json`
 - Phase M-01 completed: `memory/CURRENT_STATE.md` synchronized to current public branch truth
 - Retroactive reconciliation completed: Phases 06A, 06C, 01F-A, 02A, 02B, 03A, 03B, 02C, 02D, 04A, 05A, and 05B were retroactively closed after review
-- Phase 04B was reviewed as partial and left open
-- Phase 05C was reviewed as blocked and left open
+- Phase 04B durable dashboard summary consumption was validated and closed after the durable db-backed read path landed
+- Phase 05C review findings were fixed and the phase was closed after validation
 
 ## Phase-review fixes applied before final reconciliation
 - `docs/refactor-summary.md`
@@ -33,17 +37,24 @@ status: blocked
 - Dashboard now consumes durable lineage summaries through the `@promptshield/db` package boundary, uses the proxy lineage sqlite path by default, and preserves explicit demo fallback behavior when durable reads fail
 - The db workspace surface, dashboard contracts/read-model seam, worker savings-rollup surface, Phase 01G db lineage write seam, Phase 01H package-boundary export correction, and Phase 01I executor-backed persistence integration are present, and their listed validation was rerun successfully
 - Phase 04B is complete: the dashboard no longer wraps a static preview summary and now reads durable db-backed summaries with explicit fallback behavior
-- Optimizer helper naming is reduced to a transitional heuristic helper surface, but Phase 05C remains blocked because Python validation could not run locally
+- Optimizer helper naming is reduced to a transitional helper surface, root optimizer command naming is truthful, and Python runtime authority is preserved behind explicit `test:python` entrypoints
+- Optimizer documentation now states that Python test commands require an activated Python environment with the optimizer test extras installed
 - Phase 01G is complete: `packages/db/src/write-lineage-event.ts`, `packages/db/src/write-lineage-event.test.ts`, `packages/db/src/index.ts`, and `packages/db/package.json` now provide the bounded seam, focused tests, and truthful package exports/test command
 - Phase 01H is complete: `packages/db/package.json` and `packages/db/src/index.ts` now provide a truthful root package boundary for lineage writes while preserving the dashboard read-model subpath export
 - Phase 01I is complete: `packages/db` now provides executor-backed sqlite-backed lineage persistence, and proxy now routes lineage writes through the package seam while preserving route outcomes and failure tolerance
 
-## Phase 01J files in scope
-- `apps/proxy/src/lib/build-lineage-event.ts`
-- `apps/proxy/src/lib/build-lineage-event.test.ts`
-- `apps/proxy/src/routes/chat-completions.test.ts`
+## Active implementation scope
+- None; no next implementation phase is defined yet
 
 ## Validation
+- Phase 04B validation passed: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- Phase 04B validation passed: `pnpm --filter @promptshield/db test`
+- Phase 04B validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Phase 04B validation passed: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- Phase 05C validation passed: `pnpm run typecheck:optimizer`
+- Phase 05C validation passed: `pnpm run test:optimizer:helper`
+- Phase 05C validation passed in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer:python` -> `4 passed in 0.30s`
+- Phase 05C validation passed in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer` -> `4 passed in 0.32s`
 - Manual consistency review completed: `memory/CURRENT_STATE.md` checked against `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`, `memory/NEXT_STEPS.md`, `memory/DECISIONS.md`, and `opencode.json`
 - Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
 - Validation rerun now: `pnpm --filter @promptshield/db test`
@@ -67,16 +78,19 @@ status: blocked
 - Validation rerun now: `pnpm --filter @promptshield/worker test`
 - Validation rerun now: `pnpm --filter @promptshield/optimizer test`
 - Validation rerun now blocked: `pytest services/optimizer/tests -q` -> `pytest: command not found`
+- Validation rerun now: `pnpm run typecheck:optimizer`
+- Validation rerun now: `pnpm run test:optimizer:helper`
+- Validation rerun now in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer:python`
+- Validation rerun now in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer`
 
-## Phase 01J blocker
-- None; phase completed
+## Remaining blocker
+- None
 
 ## Other open phases
-- Phase 05C validation is blocked locally: `pytest services/optimizer/tests -q` failed with `pytest: command not found`
+- None documented here
 
 ## Next immediate step
-- Resume Phase 05C in an environment with Python test tooling available
-- Install optimizer test extras from `services/optimizer/pyproject.toml` and rerun `pytest services/optimizer/tests -q`
+- Define the next atomic implementation phase before further code changes; `docs/phases/ACTIVE.md` is intentionally parked in a truthful no-active-phase state
 
 ## Completion signal
-- Phase 05C can only close once Python validation runs successfully or a truthful environment-specific blocker is documented
+- Phase 04B and Phase 05C are closed, and the repository is awaiting the next planned implementation phase
