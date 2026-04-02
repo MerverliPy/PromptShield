@@ -3,10 +3,10 @@
 Premium cost-control layer for indie AI products.
 
 PromptShield combines:
-- an OpenAI-compatible proxy,
+- an OpenAI-compatible proxy request path,
 - deterministic budget-aware routing,
-- quality-preserving prompt/context optimization,
-- a premium PWA savings dashboard.
+- local durable lineage persistence and savings reads through `@promptshield/db`,
+- a premium PWA savings dashboard with an explicit fallback state when durable data is unavailable.
 
 ## Quick start
 
@@ -19,6 +19,8 @@ pnpm dev:dashboard
 No `.env` file is required for the current quick start. See `.env.example` for the current local defaults.
 
 The current quick start does not start the optimizer runtime. Optimizer HTTP ownership belongs to the Python service in `services/optimizer`; any TypeScript surface in that folder is transitional helper code.
+
+The current quick start also does not enable durable dashboard reads by itself. Set `PROMPTSHIELD_PROXY_LINEAGE_DB` to a shared SQLite path if you want the proxy, dashboard, and worker to read/write the same local durable lineage data; otherwise the dashboard intentionally shows explicit fallback demo data.
 
 ## Optimizer command matrix
 
@@ -40,15 +42,15 @@ Before running `test:optimizer` or `test:optimizer:python`, activate a Python en
 
 ```text
 apps/
-  dashboard/   Next.js PWA shell
-  proxy/       OpenAI-compatible gateway
-  worker/      async analytics and recommendation jobs
+  dashboard/   Next.js PWA shell for durable summary reads or explicit fallback demo data
+  proxy/       OpenAI-compatible policy and lineage ingress
+  worker/      async savings rollup jobs from durable lineage when configured
 services/
   optimizer/   Python-owned optimizer runtime; TS helper surface is transitional
 packages/
   contracts/   shared contracts
   policy/      deterministic routing and budget logic
-  db/          durable relational schema
+  db/          local durable lineage schema and sqlite-backed read/write seams
   ui/          shared presentational primitives
 docs/
   architecture.md

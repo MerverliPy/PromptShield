@@ -1,7 +1,7 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: 02-R1
+phase: 00T-R1
 status: completed
 
 ## NOW
@@ -15,6 +15,8 @@ status: completed
 - None
 
 ## DONE_THIS_WEEK
+- 00T-R1 closed: aligned top-level documentation to the current runtime truth and explicit degraded paths
+- Validation passed: `git diff -- README.md docs/architecture.md memory/CURRENT_STATE.md`
 - 02-R1 closed: added direct deterministic package-level validation for policy request evaluation
 - Validation passed: `pnpm --filter @promptshield/policy test`
 - 01C-R1 closed: made dashboard fallback view-model state explicit when durable lineage data is unavailable

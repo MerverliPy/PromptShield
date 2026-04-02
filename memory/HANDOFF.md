@@ -1,12 +1,12 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: 02-R1
+phase: 00T-R1
 status: completed
 
 ## Last completed action
-- Phase 02-R1 completed: `@promptshield/policy` now has direct deterministic request-evaluation tests so routing and budget behavior no longer depend on proxy integration coverage alone
-- Phase 02-R1 files changed: `docs/phases/ACTIVE.md`, `packages/policy/package.json`, `packages/policy/src/evaluate-request.test.ts`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
+- Phase 00T-R1 completed: top-level documentation now describes the current proxy, dashboard, worker, and optimizer runtime truth without overstating provider dispatch or broader durable behavior
+- Phase 00T-R1 files changed: `docs/phases/ACTIVE.md`, `README.md`, `docs/architecture.md`, `memory/CURRENT_STATE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
@@ -21,12 +21,13 @@ status: completed
 - worker fallback remains the explicit empty source when durable lineage data is unavailable
 - the active local durable lineage contract is now explicitly the plural SQLite table set: `request_events`, `optimization_actions`, and `savings_records`
 - `packages/db/schema.sql` now matches the live SQLite writer columns and types instead of the earlier singular/Postgres-style draft
+- `README.md` and `docs/architecture.md` now describe the current local SQLite-backed runtime and explicit degraded paths instead of a broader future-state architecture
 
 ## Validation
-- Phase 02-R1 validation passed: `pnpm --filter @promptshield/policy test`
+- Phase 00T-R1 validation passed: `git diff -- README.md docs/architecture.md memory/CURRENT_STATE.md`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Select the next bounded implementation phase now that policy request evaluation has direct deterministic package coverage
+- Select the next bounded implementation phase now that top-level documentation matches the current runtime truth

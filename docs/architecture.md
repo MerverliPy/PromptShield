@@ -2,29 +2,28 @@
 
 ## System boundary
 
-PromptShield has four runtime surfaces:
+PromptShield currently exposes four runtime surfaces, but the local quick start only starts the proxy and dashboard.
 
 1. **Dashboard**
    - Next.js PWA
-   - onboarding, settings, spend views, savings views, policy control
+   - reads durable lineage summaries through `@promptshield/db` when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
+   - falls back to explicit demo data when durable reads are unavailable or unconfigured
 
 2. **Proxy**
    - OpenAI-compatible HTTP service
-   - request normalization
-   - workspace policy evaluation
-   - provider dispatch
-   - event emission
+   - request normalization and deterministic request evaluation
+   - lineage event emission and optional local sqlite persistence through `@promptshield/db`
+   - explicit degraded persistence signaling through `/health` and route headers when sqlite persistence is unavailable
 
 3. **Optimizer**
-    - Python service
-    - owns the optimizer HTTP boundary, including `/optimize`
-    - request classification
-    - context compression
-    - quality-risk scoring
-    - recommendation generation
+   - Python service
+   - owns the optimizer HTTP boundary, including `/optimize`
+   - current TypeScript code in `services/optimizer` is helper-only and not the optimizer HTTP authority
 
 4. **Worker**
-   - async jobs for analytics enrichment, policy recommendations, anomaly checks
+   - async jobs for savings rollups
+   - reads durable lineage inputs when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
+   - falls back to an explicit empty source when durable lineage data is unavailable
 
 ## Core data flow
 
@@ -32,12 +31,13 @@ PromptShield has four runtime surfaces:
 Client App
   -> Proxy
     -> Policy Engine
-      -> pass through | reroute | compress | annotate
-    -> Provider
-    -> Event Stream
-      -> Postgres
-      -> Worker
-      -> Dashboard
+      -> allow | downgrade | reject
+    -> Lineage payload emission
+    -> Optional local SQLite lineage persistence via @promptshield/db
+      -> Dashboard durable summary read model
+      -> Worker savings rollup source
+
+When durable persistence is unavailable, the proxy stays up but reports degraded lineage persistence explicitly, and the dashboard falls back to labeled demo data.
 ```
 
 ## Repo boundaries
@@ -46,19 +46,19 @@ Client App
 Purpose: premium UI, not business logic.
 - `app/` route segments
 - `components/` page composition only
-- dashboard orchestrates contract-backed views
+- reads contract-backed durable summaries when available
+- otherwise renders explicit fallback/demo state
 
 ### `apps/proxy`
-Purpose: OpenAI-compatible ingress and provider egress.
+Purpose: OpenAI-compatible ingress and deterministic policy evaluation.
 - `src/routes/` protocol handlers
 - `src/lib/` request shaping and transport helpers
 - keep request handlers thin and deterministic
 
 ### `apps/worker`
 Purpose: background jobs only.
-- analytics enrichment
 - savings rollups
-- recommendation generation
+- explicit fallback to an empty source when durable lineage is unavailable
 - never sits in the request path
 
 ### `services/optimizer`
@@ -82,7 +82,7 @@ Purpose: pure functions for budget and routing decisions.
 - explainable outputs only
 
 ### `packages/db`
-Purpose: durable relational schema and migration history.
+Purpose: explicit durable lineage schema plus sqlite-backed read/write seams.
 
 ### `packages/ui`
 Purpose: shared presentational primitives only.

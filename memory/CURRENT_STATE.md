@@ -11,6 +11,7 @@ updated_at: 2026-04-02
 
 ## Runtime truth
 - durable lineage writes are present: proxy emits and persists lineage through `@promptshield/db`
+- proxy makes lineage persistence degradation explicit through `/health` and chat-completions response headers
 - dashboard no longer renders a static preview summary; it reads durable lineage summaries through `@promptshield/db` only when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set, with explicit fallback when durable reads are unavailable
-- worker has a savings-rollup surface, but durable ingestion over saved lineage records is still open
+- worker savings rollups now consume durable lineage inputs when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set and otherwise fall back to an explicit empty source
 - no implementation phase is active until the next bounded phase is defined
