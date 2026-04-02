@@ -1,12 +1,12 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: M-04
+phase: C-01
 status: completed
 
 ## Last completed action
-- Phase 04E-R1 completed: worker now consumes the public `@promptshield/db` package boundary instead of a deep package-internal import
-- Phase 04E-R1 files changed: `apps/worker/src/index.ts`, `apps/worker/package.json`
+- Phase C-01 completed: reduced global instruction churn by removing mutable planning files from automatic instruction loading
+- Phase C-01 files changed: `opencode.json`, `AGENTS.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
@@ -24,8 +24,7 @@ status: completed
 - `README.md` and `docs/architecture.md` now describe the current local SQLite-backed runtime and explicit degraded paths instead of a broader future-state architecture
 
 ## Validation
-- Validation passed: `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
-- Validation passed: `pnpm --filter @promptshield/worker test`
+- Validation passed: `git diff -- opencode.json AGENTS.md`
 
 ## Remaining blocker
 - None
