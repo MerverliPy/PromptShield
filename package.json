@@ -12,6 +12,7 @@
     "typecheck:optimizer:helper": "pnpm --filter @promptshield/optimizer run typecheck:helper",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
+    "test:dashboard": "pnpm --filter @promptshield/dashboard test",
     "test:optimizer": "pnpm --filter @promptshield/optimizer run test:python",
     "test:optimizer:helper": "pnpm --filter @promptshield/optimizer run test:helper",
     "test:optimizer:python": "pnpm --filter @promptshield/optimizer run test:python",
