@@ -1,49 +1,46 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 04E - Worker consumes durable savings input seam
+Phase 03C - Optimizer helper identity is truthful
 
 ## Goal
-Replace the worker's empty default savings-rollup source with an env-gated durable sqlite source while preserving explicit fallback behavior when durable lineage data is unavailable.
+Reduce optimizer runtime-authority drift by making the transitional TypeScript helper identify itself clearly as helper-only while preserving the Python-owned optimizer HTTP runtime and `/optimize` boundary.
 
 ## Files in scope
-- `apps/worker/src/index.ts`
-- `apps/worker/src/index.test.ts`
+- `services/optimizer/src/server.ts`
+- `services/optimizer/src/server.test.ts`
+- `services/optimizer/package.json`
 
 ## Do not touch
-- `packages/db/**`
+- `services/optimizer/app/**`
 - `apps/proxy/**`
 - `apps/dashboard/**`
-- `services/optimizer/**`
+- `packages/db/**`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Update the worker default dependency builder so it uses `PROMPTSHIELD_PROXY_LINEAGE_DB` when present.
-2. Consume the exported durable savings-rollup source seam from `@promptshield/db`.
-3. Preserve the current explicit fallback path when the env var is unset or durable source setup cannot proceed.
-4. Extend worker tests to cover:
-   - default idle behavior remains unchanged
-   - explicit dependency injection still works
-   - durable lineage inputs are consumed when the sqlite path is set
-   - fallback remains deterministic when the env var is unset
-5. Follow the existing repo pattern for sqlite-backed tests so durable-path assertions do not become flaky on machines without the sqlite CLI.
+1. Make the TypeScript helper's service identity and startup behavior clearly helper-only.
+2. Preserve the env-gated startup requirement for the transitional helper.
+3. Keep the recommendation helper contract intact unless a naming change is required for truthfulness.
+4. Update helper tests so health and runtime identity are truthful and explicit.
+5. Keep package scripts aligned to the helper-only role.
 
 ## Constraints
-- modify only the worker module
-- do not add rollup persistence in this phase
-- do not change the worker CLI contract
-- do not read proxy internals
-- keep request-path behavior untouched
+- do not modify the Python runtime in this phase
+- do not change `/optimize`
+- do not introduce proxy integration
+- do not add new endpoints unless required to keep naming truthful
+- keep the TypeScript surface explicitly transitional
 
 ## Acceptance criteria
-- default worker execution can compute savings-rollup totals from saved lineage records when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
-- current idle behavior still returns the same supported job list
-- explicit dependency injection still overrides the default path cleanly
-- fallback behavior remains truthful when durable lineage data is unavailable
+- the TypeScript helper no longer presents itself as the authoritative optimizer runtime
+- helper tests reflect the truthful helper identity
+- package script naming and behavior stay aligned to the helper-only role
+- the Python runtime remains the sole owner of the optimizer HTTP boundary
 
 ## Validation
-- `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
-- `pnpm --filter @promptshield/worker test`
+- `pnpm run typecheck:optimizer`
+- `pnpm run test:optimizer:helper`
 
 ## Exit condition
-The worker default path can consume durable lineage records for `savings-rollup` without widening scope into proxy code.
+The transitional TypeScript helper is explicitly non-authoritative, while the Python service remains the durable optimizer runtime owner.
