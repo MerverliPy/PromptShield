@@ -1,26 +1,27 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: 06E
-status: in_progress
+phase: 03C
+status: completed
 
 ## Last completed action
-- Phase M-02 completed: durable memory now matches current branch truth and no longer claims a static dashboard preview or missing durable write path
-- Phase M-02 files changed: `memory/CURRENT_STATE.md` and `memory/NEXT_STEPS.md`
-- Phase M-02 commit: `06b3f24` - `chore(memory): reconcile current state and next steps`
+- Phase 03C completed: the transitional TypeScript optimizer helper now reports a helper-only health identity while keeping the Python runtime authoritative
+- Phase 03C files changed: `docs/phases/ACTIVE.md`, `services/optimizer/src/server.ts`, `services/optimizer/src/server.test.ts`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
 - dashboard durable reads are gated by `PROMPTSHIELD_PROXY_LINEAGE_DB`
-- worker durable ingestion is still open
-- Phase 06E is active with planning-only scope across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`
+- durable savings-rollup inputs can now be read from `savings_records` through `@promptshield/db`
+- worker savings rollups now consume durable lineage inputs when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
+- worker fallback remains the explicit empty source when durable lineage data is unavailable
+- the TypeScript optimizer helper now identifies itself as `optimizer-recommendation-helper` with `typescript-helper` runtime and `python` authority
 
 ## Validation
-- Phase M-02 validation passed: `git diff -- memory/CURRENT_STATE.md memory/NEXT_STEPS.md` -> scoped memory-only diff
-- Closeout validation passed: `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md` -> scoped planning-only diff
+- Phase 03C validation passed: `pnpm run typecheck:optimizer`
+- Phase 03C validation passed: `pnpm run test:optimizer:helper`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Confirm validation truth and keep the activation scoped to the three planning artifacts
+- Select the next bounded phase now that worker durable ingestion and optimizer helper identity are both truthful

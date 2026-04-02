@@ -17,6 +17,17 @@ export type {
   SqlDashboardReadModelOptions,
 } from "./sql-dashboard-read-model";
 
+export {
+  createSqlSavingsRollupSource,
+  createSqliteCliSavingsRollupQueryExecutor,
+  createSqliteCliSavingsRollupSource,
+} from "./sql-savings-rollup-source";
+export type {
+  SavingsRollupInput,
+  SavingsRollupSource,
+  SqlSavingsRollupQueryExecutor,
+} from "./sql-savings-rollup-source";
+
 export type {
   LineageStore,
   LineageWrite,

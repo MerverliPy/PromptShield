@@ -1,38 +1,46 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 06E - Activate validation-truth phase
+Phase 03C - Optimizer helper identity is truthful
 
 ## Goal
-Make the next bounded validation-truth step explicit in the planning artifacts before implementation resumes.
+Reduce optimizer runtime-authority drift by making the transitional TypeScript helper identify itself clearly as helper-only while preserving the Python-owned optimizer HTTP runtime and `/optimize` boundary.
 
 ## Files in scope
-- `docs/phases/ACTIVE.md`
-- `memory/HANDOFF.md`
-- `memory/TASK_BOARD.md`
+- `services/optimizer/src/server.ts`
+- `services/optimizer/src/server.test.ts`
+- `services/optimizer/package.json`
 
 ## Do not touch
-- code files
+- `services/optimizer/app/**`
+- `apps/proxy/**`
+- `apps/dashboard/**`
+- `packages/db/**`
 - `memory/CURRENT_STATE.md`
-- `memory/NEXT_STEPS.md`
 
 ## Tasks
-1. Activate Phase 06E with a planning-only scope.
-2. Mirror Phase 06E across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`.
-3. Keep the exact next action explicit: confirm validation truth before implementation starts.
+1. Make the TypeScript helper's service identity and startup behavior clearly helper-only.
+2. Preserve the env-gated startup requirement for the transitional helper.
+3. Keep the recommendation helper contract intact unless a naming change is required for truthfulness.
+4. Update helper tests so health and runtime identity are truthful and explicit.
+5. Keep package scripts aligned to the helper-only role.
 
 ## Constraints
-- keep the phase atomic
-- do not imply active code scope
-- do not modify files outside the three planning artifacts in scope
+- do not modify the Python runtime in this phase
+- do not change `/optimize`
+- do not introduce proxy integration
+- do not add new endpoints unless required to keep naming truthful
+- keep the TypeScript surface explicitly transitional
 
 ## Acceptance criteria
-- Phase 06E is explicit and bounded to the three planning artifacts
-- the next action is clearly stated as validation-truth confirmation
-- this file does not imply active code-file implementation work
+- the TypeScript helper no longer presents itself as the authoritative optimizer runtime
+- helper tests reflect the truthful helper identity
+- package script naming and behavior stay aligned to the helper-only role
+- the Python runtime remains the sole owner of the optimizer HTTP boundary
 
 ## Validation
-- `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md`
+- `pnpm run typecheck:optimizer`
+- `pnpm run test:optimizer:helper`
 
 ## Exit condition
-- Phase 06E is explicit, bounded, and mirrored across the planning artifacts
+The transitional TypeScript helper is explicitly non-authoritative, while the Python service remains the durable optimizer runtime owner.

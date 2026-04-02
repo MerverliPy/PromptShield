@@ -5,9 +5,15 @@ import type {
 } from "@promptshield/contracts/recommendations";
 import { buildHeuristicRecommendations } from "./lib/build-recommendations";
 
+const HELPER_SERVICE_NAME = "optimizer-recommendation-helper" as const;
+const HELPER_RUNTIME = "typescript-helper" as const;
+const AUTHORITATIVE_RUNTIME = "python" as const;
+
 type HealthResponse = {
   ok: true;
-  service: "optimizer";
+  service: typeof HELPER_SERVICE_NAME;
+  runtime: typeof HELPER_RUNTIME;
+  authority: typeof AUTHORITATIVE_RUNTIME;
 };
 
 type ErrorResponse = {
@@ -18,7 +24,12 @@ export function buildRecommendationHelperServer() {
   const app = Fastify({ logger: true });
 
   app.get("/health", async (): Promise<HealthResponse> => {
-    return { ok: true, service: "optimizer" };
+    return {
+      ok: true,
+      service: HELPER_SERVICE_NAME,
+      runtime: HELPER_RUNTIME,
+      authority: AUTHORITATIVE_RUNTIME,
+    };
   });
 
   app.post<{
@@ -66,6 +77,15 @@ if (
   process.env.ENABLE_TRANSITIONAL_RECOMMENDATION_HELPER === "true"
 ) {
   const app = buildRecommendationHelperServer();
+
+  app.log.info(
+    {
+      service: HELPER_SERVICE_NAME,
+      runtime: HELPER_RUNTIME,
+      authority: AUTHORITATIVE_RUNTIME,
+    },
+    "starting transitional recommendation helper",
+  );
 
   app
     .listen({ host: "0.0.0.0", port })

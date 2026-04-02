@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildServer } from "./server";
+import { buildRecommendationHelperServer } from "./server";
 
-test("GET /health returns optimizer health", async () => {
-  const app = buildServer();
+test("GET /health returns transitional helper identity", async () => {
+  const app = buildRecommendationHelperServer();
 
   const response = await app.inject({
     method: "GET",
@@ -13,14 +13,16 @@ test("GET /health returns optimizer health", async () => {
   assert.equal(response.statusCode, 200);
   assert.deepEqual(response.json(), {
     ok: true,
-    service: "optimizer",
+    service: "optimizer-recommendation-helper",
+    runtime: "typescript-helper",
+    authority: "python",
   });
 
   await app.close();
 });
 
 test("POST /recommendations returns compress recommendation for large prompts", async () => {
-  const app = buildServer();
+  const app = buildRecommendationHelperServer();
 
   const response = await app.inject({
     method: "POST",
@@ -42,7 +44,7 @@ test("POST /recommendations returns compress recommendation for large prompts", 
 });
 
 test("POST /recommendations returns downgrade recommendation for low-priority expensive model", async () => {
-  const app = buildServer();
+  const app = buildRecommendationHelperServer();
 
   const response = await app.inject({
     method: "POST",
@@ -68,7 +70,7 @@ test("POST /recommendations returns downgrade recommendation for low-priority ex
 });
 
 test("POST /recommendations returns no_change when input is already within baseline", async () => {
-  const app = buildServer();
+  const app = buildRecommendationHelperServer();
 
   const response = await app.inject({
     method: "POST",
@@ -89,7 +91,7 @@ test("POST /recommendations returns no_change when input is already within basel
 });
 
 test("POST /recommendations rejects invalid input", async () => {
-  const app = buildServer();
+  const app = buildRecommendationHelperServer();
 
   const response = await app.inject({
     method: "POST",
