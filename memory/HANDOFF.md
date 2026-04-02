@@ -1,12 +1,12 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: M-03
+phase: M-04
 status: completed
 
 ## Last completed action
-- Phase M-03 completed: reconciled planning memory, closed out the active-phase record, and pointed the next bounded step to `Phase 04E-R1 - Consume db seam through workspace package boundary`
-- Phase M-03 files changed: `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`, `memory/NEXT_STEPS.md`
+- Phase 04E-R1 completed: worker now consumes the public `@promptshield/db` package boundary instead of a deep package-internal import
+- Phase 04E-R1 files changed: `apps/worker/src/index.ts`, `apps/worker/package.json`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
@@ -24,10 +24,11 @@ status: completed
 - `README.md` and `docs/architecture.md` now describe the current local SQLite-backed runtime and explicit degraded paths instead of a broader future-state architecture
 
 ## Validation
-- Phase M-03 validation passed: `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md memory/NEXT_STEPS.md`
+- Validation passed: `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
+- Validation passed: `pnpm --filter @promptshield/worker test`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Execute `Phase 04E-R1 - Consume db seam through workspace package boundary`
+- Select the next bounded implementation phase

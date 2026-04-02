@@ -1,19 +1,22 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: M-03
+phase: M-04
 status: completed
 
 ## NOW
 - No active implementation phase recorded
 
 ## NEXT
-- Execute `Phase 04E-R1 - Consume db seam through workspace package boundary`
+- Select the next bounded implementation phase
 
 ## BLOCKED
 - None
 
 ## DONE_THIS_WEEK
+- 04E-R1 closed: worker now consumes the public `@promptshield/db` package boundary instead of a deep package-internal import
+- Validation passed: `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
+- Validation passed: `pnpm --filter @promptshield/worker test`
 - M-03 closed: reconciled planning truth, cleared the active-phase record, and set `04E-R1` as the next bounded implementation step
 - Validation passed: `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md memory/NEXT_STEPS.md`
 - 00T-R1 closed: aligned top-level documentation to the current runtime truth and explicit degraded paths
