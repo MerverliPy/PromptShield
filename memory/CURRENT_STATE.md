@@ -1,6 +1,6 @@
 # CURRENT_STATE
 
-updated_at: 2026-04-01
+updated_at: 2026-04-02
 
 ## Architecture
 - monorepo with dashboard, proxy, worker, optimizer, and shared packages
