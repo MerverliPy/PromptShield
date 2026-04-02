@@ -4,8 +4,25 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./src/lineage-writes.ts",
-    "./dashboard-read-model": "./src/dashboard-read-model.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./dashboard-read-model": {
+      "types": "./src/dashboard-read-model.ts",
+      "default": "./src/dashboard-read-model.ts"
+    },
+    "./lineage-writes": {
+      "types": "./src/lineage-writes.ts",
+      "default": "./src/lineage-writes.ts"
+    },
+    "./write-lineage-event": {
+      "types": "./src/write-lineage-event.ts",
+      "default": "./src/write-lineage-event.ts"
+    }
+  },
+  "scripts": {
+    "test": "node --import tsx --test src/*.test.ts"
   },
   "dependencies": {
     "@promptshield/contracts": "workspace:^"

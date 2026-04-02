@@ -1,50 +1,50 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01H — DB executor-backed lineage store
+Phase 04B — Dashboard durable summary consumption
 
 ## Goal
-Add a local executor-backed lineage store in `packages/db` that uses the Phase 01G seam to persist request, action, and savings writes through one explicit db-side boundary.
+Replace the dashboard static preview summary path in `apps/dashboard/lib/get-dashboard-view-model.ts` with durable db-backed reads while preserving the explicit fallback path.
 
 ## Files in scope
-- `packages/db/src/sql-lineage-store.ts`
-- `packages/db/src/sql-lineage-store.test.ts`
-- `packages/db/src/index.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.test.ts`
 
 ## Do not touch
 - `apps/proxy/**`
+- `packages/db/**`
 - `packages/policy/**`
-- `apps/dashboard/**`
+- `apps/dashboard/app/**`
+- `apps/dashboard/components/**`
 - `apps/worker/**`
 - `services/**`
 - `docs/**`
 - `memory/**` during implementation, except post-validation updates to `memory/HANDOFF.md` and `memory/TASK_BOARD.md` required for phase close
 
 ## Tasks
-1. Add `sql-lineage-store.ts` as a local executor-backed implementation of `LineageStore`.
-2. Reuse the Phase 01G write seam rather than duplicating lineage orchestration.
-3. Export the store through `packages/db/src/index.ts`.
-4. Cover the store with focused db-side tests.
+1. Replace the source-relative static preview summary wrapper in `apps/dashboard/lib/get-dashboard-view-model.ts`.
+2. Read dashboard summary data through one explicit db-backed seam.
+3. Preserve the explicit fallback path when durable reads are unavailable.
+4. Add focused dashboard-side coverage if needed within the listed scope.
 
 ## Constraints
-- database store implementation only
 - no proxy route changes
+- dashboard consumption only
+- no db implementation changes
 - no queue or worker integration
-- keep the seam local to `packages/db`
-- no real driver wiring outside the injected executor boundary
+- preserve the fallback path introduced in Phase 04A
 - no broad refactor
 - no contract churn
 
 ## Acceptance criteria
-- `packages/db` exposes one executor-backed lineage store implementation behind an injected local boundary
-- the store reuses the Phase 01G write seam rather than duplicating orchestration
-- the store is covered by focused db-side tests
+- `apps/dashboard/lib/get-dashboard-view-model.ts` no longer wraps a static preview summary
+- dashboard reads through one explicit db-backed summary seam while preserving fallback behavior
+- any dashboard-side coverage added remains within the listed scope
 - no changes occur outside listed files
 
 ## Validation
-- `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
-- `pnpm --filter @promptshield/db test`
-- `git diff -- packages/db/src/sql-lineage-store.ts packages/db/src/sql-lineage-store.test.ts packages/db/src/index.ts`
+- `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- `git diff -- apps/dashboard/lib/get-dashboard-view-model.ts apps/dashboard/lib/get-dashboard-view-model.test.ts`
 
 ## Exit condition
 - acceptance criteria pass

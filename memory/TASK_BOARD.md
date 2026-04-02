@@ -1,17 +1,17 @@
 # TASK_BOARD
 
 updated_at: 2026-04-01
-phase: Phase 01H
-status: active
+phase: Phase 04B
+status: queued
 
 ## NOW
-- Phase 01H — DB executor-backed lineage store
-- Objective: add a local executor-backed lineage store in `packages/db` behind the Phase 01G seam
+- Phase 04B — Dashboard durable summary consumption
+- Objective: replace the dashboard static preview summary path with durable db-backed reads while preserving the explicit fallback path
 - Owner: implementation
 
 ## NEXT
-- Resume Phase 04B by replacing the dashboard static preview summary path with durable db-backed reads after the db write path is executor-backed
-- Revisit Phase 04B once durable dashboard summaries can read from the db surface instead of the static preview adapter
+- Resume dashboard durable reads in `apps/dashboard/lib/get-dashboard-view-model.ts` through one explicit db-backed summary seam
+- Keep the explicit fallback path intact while removing the source-relative preview summary wrapper
 - Resolve Phase 05C Python validation in an environment with `pytest`, then decide whether any helper-only cleanup is still needed
 
 ## BLOCKED
@@ -19,6 +19,19 @@ status: active
 - Phase 05C local validation blocker: `pytest services/optimizer/tests -q` -> `pytest: command not found`
 
 ## DONE_THIS_WEEK
+- Phase 01J closed: proxy lineage payloads now omit misleading downgrade action values when no truthful post-route value can be derived, while keeping reject and allow action semantics truthful
+- Phase 01J files changed: `apps/proxy/src/lib/build-lineage-event.ts`, `apps/proxy/src/lib/build-lineage-event.test.ts`, and `apps/proxy/src/routes/chat-completions.test.ts`
+- Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
+- Validation rerun now: `pnpm --filter @promptshield/proxy test`
+- Phase 01I closed: `packages/db` now owns executor-backed lineage persistence and proxy now persists through `@promptshield/db` with failure-tolerant route behavior
+- Phase 01I files changed: `packages/db/src/sql-lineage-store.ts`, `packages/db/src/sql-lineage-store.test.ts`, `packages/db/src/write-lineage-event.ts`, `packages/db/src/write-lineage-event.test.ts`, `packages/db/src/index.ts`, `packages/db/package.json`, `apps/proxy/src/lib/build-lineage-event.ts`, `apps/proxy/src/lib/persist-lineage-event.ts`, `apps/proxy/src/routes/chat-completions.ts`, `apps/proxy/src/routes/chat-completions.test.ts`, and `apps/proxy/src/server.ts`
+- Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
+- Validation rerun now: `pnpm --filter @promptshield/db test`
+- Validation rerun now: `pnpm --filter @promptshield/proxy test`
+- Phase 01H closed: corrected the `@promptshield/db` package boundary so the package root resolves through `src/index.ts`, keeps lineage write types available, and exposes `writeLineageEvent`
+- Phase 01H files changed: `packages/db/package.json` and `packages/db/src/index.ts`
+- Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
 - Phase 01G closed: added `packages/db` lineage write seam, focused db tests, truthful package exports, and a package-local `test` script
 - Phase 01G files changed: `packages/db/src/write-lineage-event.ts`, `packages/db/src/write-lineage-event.test.ts`, `packages/db/src/index.ts`, and `packages/db/package.json`
 - Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`

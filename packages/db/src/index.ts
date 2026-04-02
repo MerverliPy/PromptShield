@@ -1,3 +1,41 @@
-export * from "./dashboard-read-model";
-export * from "./lineage-writes";
-export * from "./write-lineage-event";
+export {
+  createDashboardReadModel,
+  createStaticDashboardReadModel,
+} from "./dashboard-read-model";
+export type {
+  DashboardReadModel,
+  DashboardSummaryQuery,
+} from "./dashboard-read-model";
+
+export type {
+  LineageStore,
+  LineageWrite,
+  LineageWriteResult,
+  OptimizationActionWrite,
+  RequestEventWrite,
+  SavingsRecordWrite,
+} from "./lineage-writes";
+
+export {
+  createLineageEventStore,
+  writeProxyLineageEvent,
+  writeLineageEvent,
+} from "./write-lineage-event";
+export type {
+  LineageEventWriteAdapter,
+  ProxyPersistedActionWrite,
+  ProxyPersistedLineageWrite,
+  ProxyPersistedSavingsWrite,
+} from "./write-lineage-event";
+
+export {
+  createSqlLineageEventAdapter,
+  createSqlLineageStore,
+  createSqliteCliLineageEventAdapter,
+  createSqliteCliLineageStore,
+} from "./sql-lineage-store";
+export type {
+  SqlLineageAdapterOptions,
+  SqlLineageIdFactory,
+  SqlLineageStatementExecutor,
+} from "./sql-lineage-store";
