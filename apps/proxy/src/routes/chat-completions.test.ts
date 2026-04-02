@@ -151,7 +151,7 @@ test("chat completions generates deterministic lineage request metadata", async 
   }
 });
 
-test("buildLineageEventPayload maps request and downgrade decision into stable shell", () => {
+test("buildLineageEventPayload omits misleading downgrade action shells", () => {
   const normalized = normalizeOpenAIChatRequest({
     model: "gpt-4.1",
     messages: [{ role: "user", content: "Draft a detailed response." }],
@@ -186,12 +186,7 @@ test("buildLineageEventPayload maps request and downgrade decision into stable s
         { key: "workspace", value: "acme" },
       ],
     },
-    action: {
-      actionType: "model_reroute",
-      reason: "low_or_standard_priority_rerouted_to_cheaper_model",
-      beforeValue: 0.02721,
-      afterValue: 0.02721,
-    },
+    action: null,
     lineage: {
       requestEventId: undefined,
       actionId: undefined,
