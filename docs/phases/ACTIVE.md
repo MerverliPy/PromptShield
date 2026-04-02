@@ -1,50 +1,49 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 04D - Durable savings input source seam
+Phase 04E - Worker consumes durable savings input seam
 
 ## Goal
-Add a bounded `packages/db` seam that reads savings-rollup inputs from durable lineage records so the worker can consume saved lineage data without reading proxy internals.
+Replace the worker's empty default savings-rollup source with an env-gated durable sqlite source while preserving explicit fallback behavior when durable lineage data is unavailable.
 
 ## Files in scope
-- `packages/db/src/sql-savings-rollup-source.ts`
-- `packages/db/src/sql-savings-rollup-source.test.ts`
-- `packages/db/src/index.ts`
+- `apps/worker/src/index.ts`
+- `apps/worker/src/index.test.ts`
 
 ## Do not touch
-- `apps/worker/**`
+- `packages/db/**`
 - `apps/proxy/**`
 - `apps/dashboard/**`
 - `services/optimizer/**`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Add a sqlite-backed source factory that returns the worker rollup input shape from durable lineage storage.
-2. Read from existing durable lineage tables only; do not introduce new tables in this phase.
-3. Keep row ordering deterministic so worker results are stable under test.
-4. Add focused tests for:
-   - empty durable lineage data
-   - one saved lineage row
-   - multiple saved lineage rows with deterministic ordering
-5. Export the new source from `packages/db/src/index.ts`.
+1. Update the worker default dependency builder so it uses `PROMPTSHIELD_PROXY_LINEAGE_DB` when present.
+2. Consume the exported durable savings-rollup source seam from `@promptshield/db`.
+3. Preserve the current explicit fallback path when the env var is unset or durable source setup cannot proceed.
+4. Extend worker tests to cover:
+   - default idle behavior remains unchanged
+   - explicit dependency injection still works
+   - durable lineage inputs are consumed when the sqlite path is set
+   - fallback remains deterministic when the env var is unset
+5. Follow the existing repo pattern for sqlite-backed tests so durable-path assertions do not become flaky on machines without the sqlite CLI.
 
 ## Constraints
-- stay entirely inside `packages/db`
-- reuse existing sqlite CLI executor patterns already used in this package
-- do not introduce worker persistence in this phase
-- do not change existing lineage write behavior
-- keep the returned shape aligned to the existing worker savings-rollup input contract
+- modify only the worker module
+- do not add rollup persistence in this phase
+- do not change the worker CLI contract
+- do not read proxy internals
+- keep request-path behavior untouched
 
 ## Acceptance criteria
-- `packages/db` exports a durable savings-rollup source seam
-- the source returns `requestEventId`, `grossCostUsd`, and `optimizedCostUsd`
-- empty lineage storage returns an empty array
-- tests are focused and package-local
-- package exports remain truthful
+- default worker execution can compute savings-rollup totals from saved lineage records when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
+- current idle behavior still returns the same supported job list
+- explicit dependency injection still overrides the default path cleanly
+- fallback behavior remains truthful when durable lineage data is unavailable
 
 ## Validation
-- `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
-- `pnpm --filter @promptshield/db test`
+- `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
+- `pnpm --filter @promptshield/worker test`
 
 ## Exit condition
-The worker can import an exported db seam for durable savings-rollup inputs without reading proxy internals.
+The worker default path can consume durable lineage records for `savings-rollup` without widening scope into proxy code.

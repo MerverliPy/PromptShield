@@ -1,20 +1,23 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: 04D
+phase: 04E
 status: completed
 
 ## NOW
 - No active implementation phase recorded
 
 ## NEXT
-- Start the worker-scoped phase that consumes the exported durable savings-rollup source
-- Keep the next change bounded outside `packages/db`
+- Select the next bounded implementation phase after worker durable savings-rollup ingestion
+- Keep the next change scoped to a single module
 
 ## BLOCKED
 - None
 
 ## DONE_THIS_WEEK
+- 04E closed: worker defaults now read durable savings-rollup inputs from the db seam when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
+- Validation passed: `pnpm exec tsc -p apps/worker/tsconfig.json --noEmit`
+- Validation passed: `pnpm --filter @promptshield/worker test`
 - 04D closed: added `packages/db` durable savings-rollup source seam and exported it from `@promptshield/db`
 - Validation passed: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
 - Validation passed: `pnpm --filter @promptshield/db test`
