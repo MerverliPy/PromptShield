@@ -1,26 +1,25 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: 06E
-status: in_progress
+phase: 04D
+status: completed
 
 ## Last completed action
-- Phase M-02 completed: durable memory now matches current branch truth and no longer claims a static dashboard preview or missing durable write path
-- Phase M-02 files changed: `memory/CURRENT_STATE.md` and `memory/NEXT_STEPS.md`
-- Phase M-02 commit: `06b3f24` - `chore(memory): reconcile current state and next steps`
+- Phase 04D completed: `@promptshield/db` now exports a durable savings-rollup source seam backed by sqlite lineage reads
+- Phase 04D files changed: `docs/phases/ACTIVE.md`, `packages/db/src/sql-savings-rollup-source.ts`, `packages/db/src/sql-savings-rollup-source.test.ts`, `packages/db/src/index.ts`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
 - dashboard durable reads are gated by `PROMPTSHIELD_PROXY_LINEAGE_DB`
+- durable savings-rollup inputs can now be read from `savings_records` through `@promptshield/db`
 - worker durable ingestion is still open
-- Phase 06E is active with planning-only scope across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`
 
 ## Validation
-- Phase M-02 validation passed: `git diff -- memory/CURRENT_STATE.md memory/NEXT_STEPS.md` -> scoped memory-only diff
-- Closeout validation passed: `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md` -> scoped planning-only diff
+- Phase 04D validation passed: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- Phase 04D validation passed: `pnpm --filter @promptshield/db test`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Confirm validation truth and keep the activation scoped to the three planning artifacts
+- Wire the worker savings rollup path to the exported `@promptshield/db` seam
