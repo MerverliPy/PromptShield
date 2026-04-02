@@ -1,17 +1,17 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: NEXT
-status: pending
+phase: 06E
+status: in_progress
 
 ## NOW
-- No active phase; M-02 is closed
-- Last completed files: `memory/CURRENT_STATE.md`, `memory/NEXT_STEPS.md`
+- Phase 06E active: activate the validation-truth phase
+- Scope: `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
 
 ## NEXT
-- Phase id: `NEXT`
-- Define the next bounded phase before implementation resumes
-- Mirror Phase `NEXT` across the planning artifacts
+- Confirm validation truth for the planning-only activation
+- Close Phase 06E after `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md` passes
+- After Phase 06E closes, start the bounded validation-truth phase
 
 ## BLOCKED
 - None

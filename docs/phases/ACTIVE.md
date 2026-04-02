@@ -1,13 +1,15 @@
 # ACTIVE PHASE
 
 ## Name
-No active phase
+Phase 06E - Activate validation-truth phase
 
 ## Goal
-Park planning state until the next bounded phase is defined.
+Make the next bounded validation-truth step explicit in the planning artifacts before implementation resumes.
 
 ## Files in scope
-- None
+- `docs/phases/ACTIVE.md`
+- `memory/HANDOFF.md`
+- `memory/TASK_BOARD.md`
 
 ## Do not touch
 - code files
@@ -15,19 +17,22 @@ Park planning state until the next bounded phase is defined.
 - `memory/NEXT_STEPS.md`
 
 ## Tasks
-1. Define Phase `NEXT`.
-2. Mirror Phase `NEXT` across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`.
+1. Activate Phase 06E with a planning-only scope.
+2. Mirror Phase 06E across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`.
+3. Keep the exact next action explicit: confirm validation truth before implementation starts.
 
 ## Constraints
-- do not imply any active implementation scope
-- keep the repo parked until Phase `NEXT` is explicit
+- keep the phase atomic
+- do not imply active code scope
+- do not modify files outside the three planning artifacts in scope
 
 ## Acceptance criteria
-- this file truthfully states that no phase is active
-- the next phase id is explicitly reserved as `NEXT`
+- Phase 06E is explicit and bounded to the three planning artifacts
+- the next action is clearly stated as validation-truth confirmation
+- this file does not imply active code-file implementation work
 
 ## Validation
 - `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md`
 
 ## Exit condition
-- Phase `NEXT` is defined and mirrored across the planning artifacts
+- Phase 06E is explicit, bounded, and mirrored across the planning artifacts
