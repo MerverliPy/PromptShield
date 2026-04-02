@@ -1,7 +1,7 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: 01C-R1
+phase: 02-R1
 status: completed
 
 ## NOW
@@ -15,6 +15,8 @@ status: completed
 - None
 
 ## DONE_THIS_WEEK
+- 02-R1 closed: added direct deterministic package-level validation for policy request evaluation
+- Validation passed: `pnpm --filter @promptshield/policy test`
 - 01C-R1 closed: made dashboard fallback view-model state explicit when durable lineage data is unavailable
 - Validation passed: `pnpm run test:dashboard`
 - 01B-R2 closed: made proxy durable-lineage degradation explicit in `/health` and chat-completions response headers

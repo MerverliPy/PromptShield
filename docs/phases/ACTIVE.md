@@ -1,45 +1,46 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01C-R1 - Dashboard durable-data fallback is explicit
+Phase 02-R1 - Policy package has direct deterministic validation
 
 ## Goal
-Make dashboard fallback behavior visibly degraded when durable lineage data is unavailable, instead of presenting fallback content as normal durable data.
+Add direct package-level validation for the deterministic policy core so routing and budget behavior can be verified without depending on proxy integration tests alone.
 
 ## Files in scope
-- `apps/dashboard/lib/get-dashboard-view-model.ts`
-- `apps/dashboard/lib/get-dashboard-view-model.test.ts`
-- `apps/dashboard/lib/mock-data.ts`
+- `packages/policy/package.json`
+- `packages/policy/src/evaluate-request.ts`
+- `packages/policy/src/evaluate-request.test.ts`
 
 ## Do not touch
+- `apps/**`
 - `packages/db/**`
-- `apps/proxy/**`
-- `apps/worker/**`
 - `services/**`
+- `packages/policy/src/evaluate-budget.ts`
+- `packages/policy/src/evaluate-routing.ts`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Make the dashboard view-model explicitly indicate when it is using fallback data rather than durable lineage data.
-2. Preserve the existing durable-summary path when the database is available.
-3. Update scoped tests so missing env or read failures assert an explicit fallback/degraded indicator.
-4. Keep the phase bounded to dashboard view-model behavior only.
+1. Add a direct policy-package test script in `packages/policy/package.json`.
+2. Add a narrow deterministic test file for `evaluate-request.ts`.
+3. Cover the highest-value request evaluation cases already implied by the current request contract and deterministic routing/budget behavior.
+4. Keep the implementation bounded to direct request evaluation; do not broaden to the other policy modules in this phase.
 5. Run the listed validation.
 6. After validation passes, update `memory/HANDOFF.md` and `memory/TASK_BOARD.md` for phase closeout.
 
 ## Constraints
-- do not change dashboard page composition outside what the view-model contract requires
-- do not modify proxy or db code in this phase
-- do not invent new backend behavior
-- keep the phase bounded to `apps/dashboard/lib`
+- do not modify proxy tests in this phase
+- do not introduce network or database behavior into `packages/policy`
+- keep the phase limited to one policy entry and one direct test file
+- do not refactor unrelated policy modules
 
 ## Acceptance criteria
-- dashboard fallback state is explicit in the view model
-- durable-data state remains explicit and unchanged when the database is available
-- scoped tests cover both durable and fallback paths
+- `packages/policy` has a direct test command
+- request evaluation behavior is covered by direct deterministic tests
+- no proxy integration is required to validate the scoped policy behavior
 - listed validation passes
 
 ## Validation
-- `pnpm run test:dashboard`
+- `pnpm --filter @promptshield/policy test`
 
 ## Exit condition
-Dashboard consumers can distinguish durable lineage data from fallback/mock data without guessing from context.
+The policy package can validate its scoped deterministic request behavior directly and independently.
