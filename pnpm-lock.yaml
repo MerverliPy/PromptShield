@@ -26,6 +26,9 @@ importers:
 
   apps/dashboard:
     dependencies:
+      '@promptshield/db':
+        specifier: workspace:^
+        version: link:../../packages/db
       '@promptshield/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -51,6 +54,9 @@ importers:
       '@promptshield/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@promptshield/db':
+        specifier: workspace:^
+        version: link:../../packages/db
       '@promptshield/policy':
         specifier: workspace:^
         version: link:../../packages/policy
@@ -61,6 +67,12 @@ importers:
   apps/worker: {}
 
   packages/contracts: {}
+
+  packages/db:
+    dependencies:
+      '@promptshield/contracts':
+        specifier: workspace:^
+        version: link:../contracts
 
   packages/policy:
     dependencies:
