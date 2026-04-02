@@ -1,14 +1,15 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: C-01
+phase: 03C-R2
 status: completed
 
 ## Last completed action
-- Phase C-01 completed: reduced global instruction churn by removing mutable planning files from automatic instruction loading
-- Phase C-01 files changed: `opencode.json`, `AGENTS.md`
+- Phase 03C-R2 completed: aligned optimizer Python test execution with the documented repo-root `.venv` workflow for reproducible `pytest` resolution
+- Phase 03C-R2 files changed: `services/optimizer/package.json`, `README.md`
 
 ## Current state
+- optimizer Python test wrappers now execute through the documented repo-root `.venv`, matching the existing `pyproject.toml` test extra workflow
 - durable lineage writes are present through `@promptshield/db`
 - proxy `/health` now reports `lineagePersistence` as `active` or `unavailable`
 - proxy chat-completions responses now carry explicit lineage persistence headers so degraded persistence is route-visible without changing the JSON decision contract
@@ -24,7 +25,7 @@ status: completed
 - `README.md` and `docs/architecture.md` now describe the current local SQLite-backed runtime and explicit degraded paths instead of a broader future-state architecture
 
 ## Validation
-- Validation passed: `git diff -- opencode.json AGENTS.md`
+- Validation passed: `pnpm run test:optimizer:python`
 
 ## Remaining blocker
 - None
