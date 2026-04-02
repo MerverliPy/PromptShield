@@ -8,6 +8,7 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { getDashboardViewModel } from "./get-dashboard-view-model";
+import { FALLBACK_DATA_INDICATOR } from "./mock-data";
 
 test("getDashboardViewModel reads durable dashboard data when lineage tables are available", () => {
   try {
@@ -89,7 +90,7 @@ test("getDashboardViewModel falls back to demo data when durable reads fail", ()
 
     const dashboard = getDashboardViewModel();
 
-    assert.equal(dashboard.dataIndicator, "Demo data");
+    assert.equal(dashboard.dataIndicator, FALLBACK_DATA_INDICATOR);
   } finally {
     if (previousDatabasePath === undefined) {
       delete process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
@@ -109,7 +110,7 @@ test("getDashboardViewModel falls back to demo data when the lineage db env is u
 
     const dashboard = getDashboardViewModel();
 
-    assert.equal(dashboard.dataIndicator, "Demo data");
+    assert.equal(dashboard.dataIndicator, FALLBACK_DATA_INDICATOR);
   } finally {
     if (previousDatabasePath === undefined) {
       delete process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;

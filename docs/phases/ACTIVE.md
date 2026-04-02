@@ -1,45 +1,45 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01B-R2 - Proxy degraded persistence state is explicit
+Phase 01C-R1 - Dashboard durable-data fallback is explicit
 
 ## Goal
-Make proxy lineage persistence degradation operator-visible instead of silently presenting a fully healthy runtime when the SQLite CLI lineage path is unavailable.
+Make dashboard fallback behavior visibly degraded when durable lineage data is unavailable, instead of presenting fallback content as normal durable data.
 
 ## Files in scope
-- `apps/proxy/src/server.ts`
-- `apps/proxy/src/routes/chat-completions.ts`
-- `apps/proxy/src/routes/chat-completions.test.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- `apps/dashboard/lib/mock-data.ts`
 
 ## Do not touch
 - `packages/db/**`
-- `apps/dashboard/**`
+- `apps/proxy/**`
 - `apps/worker/**`
 - `services/**`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Make the proxy's health or route-visible state explicitly reflect whether durable lineage persistence is active or unavailable.
-2. Preserve current request handling unless a minimal response or metadata adjustment is required to make degradation truthful.
-3. Update scoped tests so degraded persistence is asserted explicitly.
-4. Do not add new infrastructure or change the current storage backend in this phase.
+1. Make the dashboard view-model explicitly indicate when it is using fallback data rather than durable lineage data.
+2. Preserve the existing durable-summary path when the database is available.
+3. Update scoped tests so missing env or read failures assert an explicit fallback/degraded indicator.
+4. Keep the phase bounded to dashboard view-model behavior only.
 5. Run the listed validation.
 6. After validation passes, update `memory/HANDOFF.md` and `memory/TASK_BOARD.md` for phase closeout.
 
 ## Constraints
-- do not change request-shaping behavior beyond what is required for truthful degraded-state signaling
-- do not modify `packages/db`
-- do not introduce dashboard changes in this phase
-- keep the phase bounded to `apps/proxy`
+- do not change dashboard page composition outside what the view-model contract requires
+- do not modify proxy or db code in this phase
+- do not invent new backend behavior
+- keep the phase bounded to `apps/dashboard/lib`
 
 ## Acceptance criteria
-- proxy behavior makes durable-lineage disabled state explicit
-- proxy tests cover the explicit degraded-path behavior
-- healthy state is no longer indistinguishable from persistence-disabled state
+- dashboard fallback state is explicit in the view model
+- durable-data state remains explicit and unchanged when the database is available
+- scoped tests cover both durable and fallback paths
 - listed validation passes
 
 ## Validation
-- `pnpm --filter @promptshield/proxy test`
+- `pnpm run test:dashboard`
 
 ## Exit condition
-Proxy operators can tell when durable lineage persistence is unavailable without inferring it from warnings alone.
+Dashboard consumers can distinguish durable lineage data from fallback/mock data without guessing from context.

@@ -1,12 +1,14 @@
 import type { DashboardViewModel } from "./view-models";
 
+export const FALLBACK_DATA_INDICATOR = "Fallback demo data: durable lineage unavailable";
+
 export function getFallbackDashboardViewModel(): DashboardViewModel {
   return {
     eyebrow: "PromptShield",
     title: "Recovered margin, not token noise.",
     description:
       "Route traffic through the proxy, then monitor spend, avoidable waste, and policy decisions from one premium control surface.",
-    dataIndicator: "Demo data",
+    dataIndicator: FALLBACK_DATA_INDICATOR,
     metrics: [
       {
         label: "Monthly spend",
