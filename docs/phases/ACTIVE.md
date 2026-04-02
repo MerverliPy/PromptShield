@@ -1,10 +1,10 @@
 # ACTIVE PHASE
 
 ## Name
-No active implementation phase
+Phase 06E - Activate validation-truth phase
 
 ## Goal
-Keep the active-phase instructions truthful while the next atomic implementation phase is being planned.
+Make the next bounded validation-truth step explicit in the planning artifacts before implementation resumes.
 
 ## Files in scope
 - `docs/phases/ACTIVE.md`
@@ -12,25 +12,27 @@ Keep the active-phase instructions truthful while the next atomic implementation
 - `memory/TASK_BOARD.md`
 
 ## Do not touch
-- `memory/CURRENT_STATE.md`
 - code files
+- `memory/CURRENT_STATE.md`
+- `memory/NEXT_STEPS.md`
 
 ## Tasks
-1. Define the next atomic implementation phase.
-2. Update this file only when that next bounded phase is ready to execute.
+1. Activate Phase 06E with a planning-only scope.
+2. Mirror Phase 06E across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`.
+3. Keep the exact next action explicit: confirm validation truth before implementation starts.
 
 ## Constraints
-- do not leave stale implementation instructions here
-- do not imply an active code scope when none is defined
-- keep the next phase atomic and bounded before implementation resumes
+- keep the phase atomic
+- do not imply active code scope
+- do not modify files outside the three planning artifacts in scope
 
 ## Acceptance criteria
-- this file does not point at stale Phase 04B, 04C, or 05C instructions
-- it is clear that no implementation phase is currently active
-- the next implementation step is to plan the next atomic phase
+- Phase 06E is explicit and bounded to the three planning artifacts
+- the next action is clearly stated as validation-truth confirmation
+- this file does not imply active code-file implementation work
 
 ## Validation
-- `git diff -- memory/HANDOFF.md memory/TASK_BOARD.md docs/phases/ACTIVE.md`
+- `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md`
 
 ## Exit condition
-- a new active implementation phase is explicitly defined here
+- Phase 06E is explicit, bounded, and mirrored across the planning artifacts

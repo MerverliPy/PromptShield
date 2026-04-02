@@ -1,11 +1,10 @@
 # NEXT_STEPS
 
-updated_at: 2026-04-01
-phase: durable
-status: active
+updated_at: 2026-04-02
 
-1. Add a durable write path for emitted lineage records.
-2. Define worker ingestion over saved lineage records.
-3. Replace dashboard demo data with aggregate read models.
-4. Align optimizer integrations to the Python-owned `/optimize` boundary.
-5. Retire or keep TypeScript recommendation surfaces explicitly helper-only as follow-up cleanup.
+1. Confirm validation truth.
+2. Confirm architecture and runtime truth.
+3. Confirm schema and runtime truth.
+4. Implement worker durable ingestion.
+5. Validate worker and `packages/db` integration.
+6. Perform final closeout.
