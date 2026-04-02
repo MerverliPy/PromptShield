@@ -5,6 +5,8 @@ phase: planning
 status: awaiting_next_phase
 
 ## Last completed action
+- Phase 04C completed: the dashboard durable summary loader now only performs durable reads when `PROMPTSHIELD_PROXY_LINEAGE_DB` is explicitly provided, removing the source-layout-coupled default path while preserving explicit demo fallback behavior
+- Phase 04C files changed: `apps/dashboard/lib/get-dashboard-view-model.ts` and `apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Operational memory closeout completed: Phase 04B and Phase 05C are closed, their exact validation commands and results are recorded below, and `docs/phases/ACTIVE.md` no longer points at stale implementation instructions
 - Operational closeout files changed: `memory/HANDOFF.md`, `memory/TASK_BOARD.md`, and `docs/phases/ACTIVE.md`
 - Phase 05C completed: optimizer command naming now keeps Python runtime authority truthful, helper typecheck runs under the repo-aligned TypeScript toolchain, and optimizer docs now state the Python test-environment prerequisite explicitly
@@ -34,7 +36,8 @@ status: awaiting_next_phase
 - Proxy lineage payloads no longer emit misleading downgrade action shells when a truthful post-route value is unavailable; reject and allow action semantics remain truthful
 - `packages/db` now owns executor-backed request/action/savings write orchestration, including proxy-derived follow-on ids behind one explicit package seam
 - `packages/db` now also owns a sqlite-backed durable dashboard summary read seam, including recent-outcome summary reads and bounded metric aggregation from lineage tables
-- Dashboard now consumes durable lineage summaries through the `@promptshield/db` package boundary, uses the proxy lineage sqlite path by default, and preserves explicit demo fallback behavior when durable reads fail
+- Dashboard now consumes durable lineage summaries through the `@promptshield/db` package boundary only when `PROMPTSHIELD_PROXY_LINEAGE_DB` is provided, and preserves explicit demo fallback behavior when durable reads fail
+- Phase 04C is complete: the dashboard loader no longer derives a durable sqlite path from module location and instead gates durable reads on the explicit env contract
 - The db workspace surface, dashboard contracts/read-model seam, worker savings-rollup surface, Phase 01G db lineage write seam, Phase 01H package-boundary export correction, and Phase 01I executor-backed persistence integration are present, and their listed validation was rerun successfully
 - Phase 04B is complete: the dashboard no longer wraps a static preview summary and now reads durable db-backed summaries with explicit fallback behavior
 - Optimizer helper naming is reduced to a transitional helper surface, root optimizer command naming is truthful, and Python runtime authority is preserved behind explicit `test:python` entrypoints
@@ -47,6 +50,8 @@ status: awaiting_next_phase
 - None; no next implementation phase is defined yet
 
 ## Validation
+- Phase 04C validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Phase 04C validation passed: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Phase 04B validation passed: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
 - Phase 04B validation passed: `pnpm --filter @promptshield/db test`
 - Phase 04B validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`

@@ -25,7 +25,7 @@ Keep the active-phase instructions truthful while the next atomic implementation
 - keep the next phase atomic and bounded before implementation resumes
 
 ## Acceptance criteria
-- this file does not point at stale Phase 04B or Phase 05C instructions
+- this file does not point at stale Phase 04B, 04C, or 05C instructions
 - it is clear that no implementation phase is currently active
 - the next implementation step is to plan the next atomic phase
 

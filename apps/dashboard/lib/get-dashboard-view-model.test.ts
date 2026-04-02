@@ -10,6 +10,12 @@ import { test } from "node:test";
 import { getDashboardViewModel } from "./get-dashboard-view-model";
 
 test("getDashboardViewModel reads durable dashboard data when lineage tables are available", () => {
+  try {
+    execFileSync("sqlite3", ["--version"], { stdio: "ignore" });
+  } catch {
+    return;
+  }
+
   const tempDirectory = mkdtempSync(join(tmpdir(), "promptshield-dashboard-"));
   const databasePath = join(tempDirectory, "dashboard.sqlite");
   const previousDatabasePath = process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
@@ -92,5 +98,23 @@ test("getDashboardViewModel falls back to demo data when durable reads fail", ()
     }
 
     rmSync(tempDirectory, { recursive: true, force: true });
+  }
+});
+
+test("getDashboardViewModel falls back to demo data when the lineage db env is unset", () => {
+  const previousDatabasePath = process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
+
+  try {
+    delete process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
+
+    const dashboard = getDashboardViewModel();
+
+    assert.equal(dashboard.dataIndicator, "Demo data");
+  } finally {
+    if (previousDatabasePath === undefined) {
+      delete process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
+    } else {
+      process.env.PROMPTSHIELD_PROXY_LINEAGE_DB = previousDatabasePath;
+    }
   }
 });

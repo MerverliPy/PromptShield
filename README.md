@@ -34,6 +34,8 @@ The current quick start does not start the optimizer runtime. Optimizer HTTP own
   - `pnpm --filter @promptshield/optimizer run test:helper` -> helper-only TypeScript tests
   - `pnpm --filter @promptshield/optimizer run test:python` -> Python runtime validation
 
+Before running `test:optimizer` or `test:optimizer:python`, activate a Python environment with the optimizer test extras installed. For example, create a virtualenv with `python -m venv .venv` and then install the extras with `.venv/bin/python -m pip install -e ./services/optimizer[test]`.
+
 ## Repo layout
 
 ```text

@@ -17,6 +17,10 @@ status: awaiting_next_phase
 - None
 
 ## DONE_THIS_WEEK
+- Phase 04C closed: the dashboard durable summary loader now only performs durable reads when `PROMPTSHIELD_PROXY_LINEAGE_DB` is explicitly provided, removing the source-layout-coupled default path while preserving explicit demo fallback behavior
+- Phase 04C files changed: `apps/dashboard/lib/get-dashboard-view-model.ts` and `apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- Phase 04C validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Phase 04C validation passed: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Operational closeout completed: Phase 04B and Phase 05C are now closed, their exact validation commands and results are recorded in `memory/HANDOFF.md`, and `docs/phases/ACTIVE.md` now truthfully shows no active implementation phase
 - Phase 05C closed: optimizer root command naming is truthful, helper typecheck now runs under the repo-aligned TypeScript toolchain, and optimizer docs state the Python test-environment prerequisite explicitly
 - Phase 05C files changed: `README.md`, `services/optimizer/package.json`, and `pnpm-lock.yaml`

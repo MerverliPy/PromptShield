@@ -1,13 +1,17 @@
-import { fileURLToPath } from "node:url";
-
 import { createSqliteCliDashboardReadModel } from "@promptshield/db";
 
 import { createDashboardViewModel } from "./view-models";
 import { getFallbackDashboardViewModel } from "./mock-data";
 
 export function getDashboardViewModel() {
+  const databasePath = process.env.PROMPTSHIELD_PROXY_LINEAGE_DB;
+
+  if (!databasePath) {
+    return getFallbackDashboardViewModel();
+  }
+
   try {
-    const summary = createSqliteCliDashboardReadModel(getLineageDatabasePath()).readDashboardSummary({
+    const summary = createSqliteCliDashboardReadModel(databasePath).readDashboardSummary({
       recentOutcomeLimit: 3,
     });
 
@@ -17,11 +21,4 @@ export function getDashboardViewModel() {
   } catch {
     return getFallbackDashboardViewModel();
   }
-}
-
-function getLineageDatabasePath() {
-  return (
-    process.env.PROMPTSHIELD_PROXY_LINEAGE_DB ??
-    fileURLToPath(new URL("../../proxy/.data/proxy-lineage.sqlite", import.meta.url))
-  );
 }
