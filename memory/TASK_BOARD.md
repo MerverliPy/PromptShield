@@ -1,24 +1,29 @@
 # TASK_BOARD
 
 updated_at: 2026-04-01
-phase: Phase 04B
-status: queued
+phase: Phase 05C
+status: blocked
 
 ## NOW
-- Phase 04B — Dashboard durable summary consumption
-- Objective: replace the dashboard static preview summary path with durable db-backed reads while preserving the explicit fallback path
+- Phase 05C — Optimizer validation unblock
+- Objective: run the Python optimizer test suite in an environment with `pytest` installed and confirm whether any helper-only cleanup still remains
 - Owner: implementation
 
 ## NEXT
-- Resume dashboard durable reads in `apps/dashboard/lib/get-dashboard-view-model.ts` through one explicit db-backed summary seam
-- Keep the explicit fallback path intact while removing the source-relative preview summary wrapper
+- Install optimizer test extras from `services/optimizer/pyproject.toml`
+- Rerun `pytest services/optimizer/tests -q`
 - Resolve Phase 05C Python validation in an environment with `pytest`, then decide whether any helper-only cleanup is still needed
 
 ## BLOCKED
-- Phase 04B remains open: dashboard provider still wraps a static preview summary instead of durable db-backed summaries
 - Phase 05C local validation blocker: `pytest services/optimizer/tests -q` -> `pytest: command not found`
 
 ## DONE_THIS_WEEK
+- Phase 04B closed: dashboard now consumes durable lineage summaries through `@promptshield/db` with a sqlite-backed read seam and preserves explicit demo fallback behavior when durable reads are unavailable
+- Phase 04B files changed: `packages/db/src/sql-dashboard-read-model.ts`, `packages/db/src/sql-dashboard-read-model.test.ts`, `packages/db/src/index.ts`, `apps/dashboard/lib/get-dashboard-view-model.ts`, `apps/dashboard/lib/get-dashboard-view-model.test.ts`, and `apps/dashboard/package.json`
+- Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- Validation rerun now: `pnpm --filter @promptshield/db test`
+- Validation rerun now: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Validation rerun now: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Phase 01J closed: proxy lineage payloads now omit misleading downgrade action values when no truthful post-route value can be derived, while keeping reject and allow action semantics truthful
 - Phase 01J files changed: `apps/proxy/src/lib/build-lineage-event.ts`, `apps/proxy/src/lib/build-lineage-event.test.ts`, and `apps/proxy/src/routes/chat-completions.test.ts`
 - Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`

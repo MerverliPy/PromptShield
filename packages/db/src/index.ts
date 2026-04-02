@@ -7,6 +7,16 @@ export type {
   DashboardSummaryQuery,
 } from "./dashboard-read-model";
 
+export {
+  createSqlDashboardReadModel,
+  createSqliteCliDashboardQueryExecutor,
+  createSqliteCliDashboardReadModel,
+} from "./sql-dashboard-read-model";
+export type {
+  SqlDashboardQueryExecutor,
+  SqlDashboardReadModelOptions,
+} from "./sql-dashboard-read-model";
+
 export type {
   LineageStore,
   LineageWrite,
