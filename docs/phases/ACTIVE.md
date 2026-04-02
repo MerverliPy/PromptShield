@@ -1,36 +1,33 @@
 # ACTIVE PHASE
 
 ## Name
-No active implementation phase
+No active phase
 
 ## Goal
-Keep the active-phase instructions truthful while the next atomic implementation phase is being planned.
+Park planning state until the next bounded phase is defined.
 
 ## Files in scope
-- `docs/phases/ACTIVE.md`
-- `memory/HANDOFF.md`
-- `memory/TASK_BOARD.md`
+- None
 
 ## Do not touch
-- `memory/CURRENT_STATE.md`
 - code files
+- `memory/CURRENT_STATE.md`
+- `memory/NEXT_STEPS.md`
 
 ## Tasks
-1. Define the next atomic implementation phase.
-2. Update this file only when that next bounded phase is ready to execute.
+1. Define Phase `NEXT`.
+2. Mirror Phase `NEXT` across `docs/phases/ACTIVE.md`, `memory/HANDOFF.md`, and `memory/TASK_BOARD.md`.
 
 ## Constraints
-- do not leave stale implementation instructions here
-- do not imply an active code scope when none is defined
-- keep the next phase atomic and bounded before implementation resumes
+- do not imply any active implementation scope
+- keep the repo parked until Phase `NEXT` is explicit
 
 ## Acceptance criteria
-- this file does not point at stale Phase 04B, 04C, or 05C instructions
-- it is clear that no implementation phase is currently active
-- the next implementation step is to plan the next atomic phase
+- this file truthfully states that no phase is active
+- the next phase id is explicitly reserved as `NEXT`
 
 ## Validation
-- `git diff -- memory/HANDOFF.md memory/TASK_BOARD.md docs/phases/ACTIVE.md`
+- `git diff -- docs/phases/ACTIVE.md memory/HANDOFF.md memory/TASK_BOARD.md`
 
 ## Exit condition
-- a new active implementation phase is explicitly defined here
+- Phase `NEXT` is defined and mirrored across the planning artifacts
