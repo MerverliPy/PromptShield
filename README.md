@@ -36,7 +36,7 @@ The current quick start also does not enable durable dashboard reads by itself. 
   - `pnpm --filter @promptshield/optimizer run test:helper` -> helper-only TypeScript tests
   - `pnpm --filter @promptshield/optimizer run test:python` -> Python runtime validation
 
-Before running `test:optimizer` or `test:optimizer:python`, activate a Python environment with the optimizer test extras installed. For example, create a virtualenv with `python -m venv .venv` and then install the extras with `.venv/bin/python -m pip install -e ./services/optimizer[test]`.
+Before running `test:optimizer` or `test:optimizer:python`, create the repo-root optimizer virtualenv with `python -m venv .venv` and install the test extras with `.venv/bin/python -m pip install -e ./services/optimizer[test]`. The optimizer Python test wrappers use that repo-root `.venv` directly, so no separate shell activation is required.
 
 ## Repo layout
 
