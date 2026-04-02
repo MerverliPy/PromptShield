@@ -5,7 +5,10 @@ import { promisify } from "node:util";
 import { createSqliteCliLineageEventAdapter, type LineageEventWriteAdapter } from "@promptshield/db";
 import type { FastifyBaseLogger } from "fastify";
 import Fastify from "fastify";
-import { registerChatCompletionsRoute } from "./routes/chat-completions";
+import {
+  registerChatCompletionsRoute,
+  type LineagePersistenceState,
+} from "./routes/chat-completions";
 
 const execFileAsync = promisify(execFile);
 
@@ -14,20 +17,13 @@ export async function buildServer(options: {
   lineageDatabasePath?: string;
 } = {}) {
   const app = Fastify({ logger: true });
-  const lineageAdapter =
-    options.lineageAdapter ??
-    (await createDefaultLineageAdapter(
-      app.log,
-      options.lineageDatabasePath ??
-        process.env.PROMPTSHIELD_PROXY_LINEAGE_DB ??
-        fileURLToPath(new URL("../.data/proxy-lineage.sqlite", import.meta.url)),
-    ));
+  const { lineageAdapter, lineagePersistence } = await resolveLineagePersistence(app.log, options);
 
   app.get("/health", async () => {
-    return { ok: true, service: "proxy" };
+    return { ok: true, service: "proxy", lineagePersistence };
   });
 
-  registerChatCompletionsRoute(app, { lineageAdapter });
+  registerChatCompletionsRoute(app, { lineageAdapter, lineagePersistence });
 
   return app;
 }
@@ -47,12 +43,45 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 async function createDefaultLineageAdapter(
   log: Pick<FastifyBaseLogger, "warn">,
   databasePath: string,
-): Promise<LineageEventWriteAdapter | undefined> {
+): Promise<{ lineageAdapter?: LineageEventWriteAdapter; lineagePersistence: LineagePersistenceState }> {
   try {
     await execFileAsync("sqlite3", ["--version"]);
-    return createSqliteCliLineageEventAdapter(databasePath);
+    return {
+      lineageAdapter: createSqliteCliLineageEventAdapter(databasePath),
+      lineagePersistence: { status: "active" },
+    };
   } catch (error) {
     log.warn({ err: error, databasePath }, "Proxy lineage persistence disabled: sqlite3 CLI not available");
-    return undefined;
+    return {
+      lineageAdapter: undefined,
+      lineagePersistence: { status: "unavailable", reason: "sqlite3_cli_unavailable" },
+    };
   }
+}
+
+async function resolveLineagePersistence(
+  log: Pick<FastifyBaseLogger, "warn">,
+  options: {
+    lineageAdapter?: LineageEventWriteAdapter;
+    lineageDatabasePath?: string;
+  },
+): Promise<{ lineageAdapter?: LineageEventWriteAdapter; lineagePersistence: LineagePersistenceState }> {
+  if (Object.prototype.hasOwnProperty.call(options, "lineageAdapter")) {
+    return options.lineageAdapter
+      ? {
+          lineageAdapter: options.lineageAdapter,
+          lineagePersistence: { status: "active" },
+        }
+      : {
+          lineageAdapter: undefined,
+          lineagePersistence: { status: "unavailable", reason: "adapter_unconfigured" },
+        };
+  }
+
+  return createDefaultLineageAdapter(
+    log,
+    options.lineageDatabasePath ??
+      process.env.PROMPTSHIELD_PROXY_LINEAGE_DB ??
+      fileURLToPath(new URL("../.data/proxy-lineage.sqlite", import.meta.url)),
+  );
 }

@@ -16,7 +16,11 @@ import { emitLineageEvent } from "../lib/emit-lineage-event";
 import { normalizeOpenAIChatRequest } from "../lib/openai-normalize";
 import { persistLineageEvent } from "../lib/persist-lineage-event";
 import { buildServer } from "../server";
-import { registerChatCompletionsRoute } from "./chat-completions";
+import {
+  LINEAGE_PERSISTENCE_HEADER,
+  LINEAGE_PERSISTENCE_REASON_HEADER,
+  registerChatCompletionsRoute,
+} from "./chat-completions";
 
 test("chat completions returns an allow decision for a valid request", async () => {
   const app = Fastify();
@@ -44,6 +48,28 @@ test("chat completions returns an allow decision for a valid request", async () 
     assert.equal(body.budget.overBudget, false);
     assert.equal(typeof body.lineage?.requestId, "string");
     assert.ok(body.lineage.requestId.startsWith("req_"));
+  } finally {
+    await app.close();
+  }
+});
+
+test("chat completions exposes unavailable lineage persistence when no adapter is configured", async () => {
+  const app = Fastify();
+  registerChatCompletionsRoute(app);
+
+  try {
+    const response = await app.inject({
+      method: "POST",
+      url: "/v1/chat/completions",
+      payload: {
+        model: "gpt-4.1",
+        messages: [{ role: "user", content: "Summarize the latest request." }],
+      },
+    });
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.headers[LINEAGE_PERSISTENCE_HEADER], "unavailable");
+    assert.equal(response.headers[LINEAGE_PERSISTENCE_REASON_HEADER], "adapter_unconfigured");
   } finally {
     await app.close();
   }
@@ -555,6 +581,55 @@ test("buildServer persists downgrade lineage through the default sqlite adapter"
     await app.close();
     await delay(50);
     rmSync(tempDirectory, { recursive: true, force: true });
+  }
+});
+
+test("buildServer health reports active lineage persistence when an adapter is configured", async () => {
+  const app = await buildServer({
+    lineageAdapter: {
+      async writeRequestEvent(request) {
+        return {
+          id: "request-event-1",
+          createdAt: "2026-04-01T00:00:00.000Z",
+          ...request,
+        };
+      },
+    },
+  });
+
+  try {
+    const response = await app.inject({ method: "GET", url: "/health" });
+
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(response.json(), {
+      ok: true,
+      service: "proxy",
+      lineagePersistence: {
+        status: "active",
+      },
+    });
+  } finally {
+    await app.close();
+  }
+});
+
+test("buildServer health reports unavailable lineage persistence when no adapter is configured", async () => {
+  const app = await buildServer({ lineageAdapter: undefined });
+
+  try {
+    const response = await app.inject({ method: "GET", url: "/health" });
+
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(response.json(), {
+      ok: true,
+      service: "proxy",
+      lineagePersistence: {
+        status: "unavailable",
+        reason: "adapter_unconfigured",
+      },
+    });
+  } finally {
+    await app.close();
   }
 });
 

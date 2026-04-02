@@ -1,45 +1,45 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 01B-R1 - Schema and runtime truth for durable lineage
+Phase 01B-R2 - Proxy degraded persistence state is explicit
 
 ## Goal
-Reconcile the declared durable lineage schema with the currently active SQLite CLI runtime so the schema file, lineage writes, and dashboard reads all describe the same storage contract.
+Make proxy lineage persistence degradation operator-visible instead of silently presenting a fully healthy runtime when the SQLite CLI lineage path is unavailable.
 
 ## Files in scope
-- `packages/db/schema.sql`
-- `packages/db/src/sql-lineage-store.ts`
-- `packages/db/src/sql-dashboard-read-model.ts`
+- `apps/proxy/src/server.ts`
+- `apps/proxy/src/routes/chat-completions.ts`
+- `apps/proxy/src/routes/chat-completions.test.ts`
 
 ## Do not touch
-- `apps/**`
+- `packages/db/**`
+- `apps/dashboard/**`
+- `apps/worker/**`
 - `services/**`
-- `packages/policy/**`
-- `docker-compose.yml`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Choose one truthful storage contract for the current local durable lineage path and make all scoped files match it.
-2. Remove singular/plural table-name drift between the declared schema and the runtime SQL statements.
-3. Keep the existing lineage write and dashboard read contracts stable unless a naming change is required to restore schema truth.
-4. Preserve the current SQLite CLI path for this phase; do not widen to a new persistence integration.
+1. Make the proxy's health or route-visible state explicitly reflect whether durable lineage persistence is active or unavailable.
+2. Preserve current request handling unless a minimal response or metadata adjustment is required to make degradation truthful.
+3. Update scoped tests so degraded persistence is asserted explicitly.
+4. Do not add new infrastructure or change the current storage backend in this phase.
 5. Run the listed validation.
 6. After validation passes, update `memory/HANDOFF.md` and `memory/TASK_BOARD.md` for phase closeout.
 
 ## Constraints
-- do not broaden this phase to Postgres integration
-- do not change environment variable names
-- do not modify proxy, dashboard, worker, or optimizer code
-- keep the phase bounded to `packages/db`
+- do not change request-shaping behavior beyond what is required for truthful degraded-state signaling
+- do not modify `packages/db`
+- do not introduce dashboard changes in this phase
+- keep the phase bounded to `apps/proxy`
 
 ## Acceptance criteria
-- `schema.sql` describes the same tables and columns that the active SQLite lineage writer uses
-- dashboard SQL reads from the same table names used by lineage writes
-- no table-name drift remains in the scoped files
+- proxy behavior makes durable-lineage disabled state explicit
+- proxy tests cover the explicit degraded-path behavior
+- healthy state is no longer indistinguishable from persistence-disabled state
 - listed validation passes
 
 ## Validation
-- `pnpm --filter @promptshield/db test`
+- `pnpm --filter @promptshield/proxy test`
 
 ## Exit condition
-The declared durable lineage schema and the active SQLite runtime are truthful and aligned for local durable reads and writes.
+Proxy operators can tell when durable lineage persistence is unavailable without inferring it from warnings alone.
