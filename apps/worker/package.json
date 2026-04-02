@@ -2,6 +2,9 @@
   "name": "@promptshield/worker",
   "private": true,
   "version": "0.1.0",
+  "dependencies": {
+    "@promptshield/db": "workspace:^"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
