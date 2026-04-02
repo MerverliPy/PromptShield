@@ -13,9 +13,7 @@
     "reserved": 12000
   },
   "instructions": [
-    "AGENTS.md",
-    "memory/HANDOFF.md",
-    "docs/phases/ACTIVE.md"
+    "AGENTS.md"
   ],
   "agent": {
     "controller": {

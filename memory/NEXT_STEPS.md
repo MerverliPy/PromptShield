@@ -2,9 +2,6 @@
 
 updated_at: 2026-04-02
 
-1. Confirm validation truth.
-2. Confirm architecture and runtime truth.
-3. Confirm schema and runtime truth.
-4. Implement worker durable ingestion.
-5. Validate worker and `packages/db` integration.
-6. Perform final closeout.
+1. Select the next bounded implementation phase.
+2. Keep the next change scoped to one module or one config surface.
+3. Validate narrowly before any broad checks.

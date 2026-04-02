@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import { createSqliteCliSavingsRollupSource } from "../../../packages/db/src";
+import { createSqliteCliSavingsRollupSource } from "@promptshield/db";
 
 import {
   runSavingsRollup,

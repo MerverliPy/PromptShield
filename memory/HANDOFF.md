@@ -1,12 +1,12 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: 00T-R1
+phase: C-01
 status: completed
 
 ## Last completed action
-- Phase 00T-R1 completed: top-level documentation now describes the current proxy, dashboard, worker, and optimizer runtime truth without overstating provider dispatch or broader durable behavior
-- Phase 00T-R1 files changed: `docs/phases/ACTIVE.md`, `README.md`, `docs/architecture.md`, `memory/CURRENT_STATE.md`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
+- Phase C-01 completed: reduced global instruction churn by removing mutable planning files from automatic instruction loading
+- Phase C-01 files changed: `opencode.json`, `AGENTS.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
@@ -24,10 +24,10 @@ status: completed
 - `README.md` and `docs/architecture.md` now describe the current local SQLite-backed runtime and explicit degraded paths instead of a broader future-state architecture
 
 ## Validation
-- Phase 00T-R1 validation passed: `git diff -- README.md docs/architecture.md memory/CURRENT_STATE.md`
+- Validation passed: `git diff -- opencode.json AGENTS.md`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Select the next bounded implementation phase now that top-level documentation matches the current runtime truth
+- Select the next bounded implementation phase
