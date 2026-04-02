@@ -24,9 +24,9 @@ The current quick start also does not enable durable dashboard reads by itself. 
 
 ## Optimizer command matrix
 
-- Root compatibility wrappers:
-  - `pnpm run typecheck:optimizer` -> TypeScript helper typecheck (`@promptshield/optimizer` `typecheck:helper`)
-  - `pnpm run test:optimizer` -> Python runtime validation (`@promptshield/optimizer` `test:python`)
+- Root compatibility aliases:
+  - `pnpm run typecheck:optimizer` -> compatibility alias for TypeScript helper typecheck (`@promptshield/optimizer` `typecheck:helper`)
+  - `pnpm run test:optimizer` -> compatibility alias for `pnpm run test:optimizer:python`
 - Root explicit commands:
   - `pnpm run typecheck:optimizer:helper` -> TypeScript helper typecheck
   - `pnpm run test:optimizer:helper` -> TypeScript helper tests
@@ -36,7 +36,11 @@ The current quick start also does not enable durable dashboard reads by itself. 
   - `pnpm --filter @promptshield/optimizer run test:helper` -> helper-only TypeScript tests
   - `pnpm --filter @promptshield/optimizer run test:python` -> Python runtime validation
 
-Before running `test:optimizer` or `test:optimizer:python`, activate a Python environment with the optimizer test extras installed. For example, create a virtualenv with `python -m venv .venv` and then install the extras with `.venv/bin/python -m pip install -e ./services/optimizer[test]`.
+Use `pnpm run test:optimizer:python` as the only authoritative optimizer test command. It runs the Python-owned optimizer tests through the repo-root `.venv` after `python -m venv .venv` and `.venv/bin/python -m pip install -e ./services/optimizer[test]`; no shell activation is required.
+
+Use `pnpm run test:optimizer` only as a compatibility alias when needed.
+
+Use `pnpm run typecheck:optimizer:helper` only for the transitional TypeScript helper path in `services/optimizer`. It does not validate the Python runtime.
 
 ## Repo layout
 

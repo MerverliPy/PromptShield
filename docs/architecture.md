@@ -67,6 +67,7 @@ Purpose: AI sidecar.
 - owns `/optimize` and other optimizer HTTP endpoints
 - `app/services/` classifier, compressor, risk
 - `app/schemas/` request and response models
+- optimizer verification is Python-owned; see `README.md` for command usage, with `pnpm run test:optimizer:python` as the authoritative test path and `pnpm run typecheck:optimizer:helper` limited to helper code
 
 ### `packages/contracts`
 Purpose: versioned shared interfaces.

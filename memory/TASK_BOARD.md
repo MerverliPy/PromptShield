@@ -1,7 +1,7 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: C-01
+phase: 03C-R2
 status: completed
 
 ## NOW
@@ -14,6 +14,8 @@ status: completed
 - None
 
 ## DONE_THIS_WEEK
+- 03C-R2 closed: optimizer Python tests now run through the documented repo-root `.venv` so `pytest` resolves reproducibly for `pnpm` wrappers
+- Validation passed: `pnpm run test:optimizer:python`
 - C-01 closed: reduced global instruction churn by removing mutable planning files from automatic instruction loading
 - Validation passed: `git diff -- opencode.json AGENTS.md`
 - 04E-R1 closed: worker now consumes the public `@promptshield/db` package boundary instead of a deep package-internal import
