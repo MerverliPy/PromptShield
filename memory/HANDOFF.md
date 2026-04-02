@@ -1,12 +1,12 @@
 # HANDOFF
 
 updated_at: 2026-04-02
-phase: 03C
+phase: 01B-R1
 status: completed
 
 ## Last completed action
-- Phase 03C completed: the transitional TypeScript optimizer helper now reports a helper-only health identity while keeping the Python runtime authoritative
-- Phase 03C files changed: `docs/phases/ACTIVE.md`, `services/optimizer/src/server.ts`, `services/optimizer/src/server.test.ts`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
+- Phase 01B-R1 completed: the declared durable lineage schema now matches the active local SQLite CLI runtime contract used by lineage writes and dashboard reads
+- Phase 01B-R1 files changed: `docs/phases/ACTIVE.md`, `packages/db/schema.sql`, `memory/HANDOFF.md`, `memory/TASK_BOARD.md`
 
 ## Current state
 - durable lineage writes are present through `@promptshield/db`
@@ -14,14 +14,14 @@ status: completed
 - durable savings-rollup inputs can now be read from `savings_records` through `@promptshield/db`
 - worker savings rollups now consume durable lineage inputs when `PROMPTSHIELD_PROXY_LINEAGE_DB` is set
 - worker fallback remains the explicit empty source when durable lineage data is unavailable
-- the TypeScript optimizer helper now identifies itself as `optimizer-recommendation-helper` with `typescript-helper` runtime and `python` authority
+- the active local durable lineage contract is now explicitly the plural SQLite table set: `request_events`, `optimization_actions`, and `savings_records`
+- `packages/db/schema.sql` now matches the live SQLite writer columns and types instead of the earlier singular/Postgres-style draft
 
 ## Validation
-- Phase 03C validation passed: `pnpm run typecheck:optimizer`
-- Phase 03C validation passed: `pnpm run test:optimizer:helper`
+- Phase 01B-R1 validation passed: `pnpm --filter @promptshield/db test`
 
 ## Remaining blocker
 - None
 
 ## Next immediate step
-- Select the next bounded phase now that worker durable ingestion and optimizer helper identity are both truthful
+- Select the next bounded implementation phase now that durable lineage schema truth is aligned with the active SQLite runtime

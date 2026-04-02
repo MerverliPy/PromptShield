@@ -1,46 +1,45 @@
 # ACTIVE PHASE
 
 ## Name
-Phase 03C - Optimizer helper identity is truthful
+Phase 01B-R1 - Schema and runtime truth for durable lineage
 
 ## Goal
-Reduce optimizer runtime-authority drift by making the transitional TypeScript helper identify itself clearly as helper-only while preserving the Python-owned optimizer HTTP runtime and `/optimize` boundary.
+Reconcile the declared durable lineage schema with the currently active SQLite CLI runtime so the schema file, lineage writes, and dashboard reads all describe the same storage contract.
 
 ## Files in scope
-- `services/optimizer/src/server.ts`
-- `services/optimizer/src/server.test.ts`
-- `services/optimizer/package.json`
+- `packages/db/schema.sql`
+- `packages/db/src/sql-lineage-store.ts`
+- `packages/db/src/sql-dashboard-read-model.ts`
 
 ## Do not touch
-- `services/optimizer/app/**`
-- `apps/proxy/**`
-- `apps/dashboard/**`
-- `packages/db/**`
+- `apps/**`
+- `services/**`
+- `packages/policy/**`
+- `docker-compose.yml`
 - `memory/CURRENT_STATE.md`
 
 ## Tasks
-1. Make the TypeScript helper's service identity and startup behavior clearly helper-only.
-2. Preserve the env-gated startup requirement for the transitional helper.
-3. Keep the recommendation helper contract intact unless a naming change is required for truthfulness.
-4. Update helper tests so health and runtime identity are truthful and explicit.
-5. Keep package scripts aligned to the helper-only role.
+1. Choose one truthful storage contract for the current local durable lineage path and make all scoped files match it.
+2. Remove singular/plural table-name drift between the declared schema and the runtime SQL statements.
+3. Keep the existing lineage write and dashboard read contracts stable unless a naming change is required to restore schema truth.
+4. Preserve the current SQLite CLI path for this phase; do not widen to a new persistence integration.
+5. Run the listed validation.
+6. After validation passes, update `memory/HANDOFF.md` and `memory/TASK_BOARD.md` for phase closeout.
 
 ## Constraints
-- do not modify the Python runtime in this phase
-- do not change `/optimize`
-- do not introduce proxy integration
-- do not add new endpoints unless required to keep naming truthful
-- keep the TypeScript surface explicitly transitional
+- do not broaden this phase to Postgres integration
+- do not change environment variable names
+- do not modify proxy, dashboard, worker, or optimizer code
+- keep the phase bounded to `packages/db`
 
 ## Acceptance criteria
-- the TypeScript helper no longer presents itself as the authoritative optimizer runtime
-- helper tests reflect the truthful helper identity
-- package script naming and behavior stay aligned to the helper-only role
-- the Python runtime remains the sole owner of the optimizer HTTP boundary
+- `schema.sql` describes the same tables and columns that the active SQLite lineage writer uses
+- dashboard SQL reads from the same table names used by lineage writes
+- no table-name drift remains in the scoped files
+- listed validation passes
 
 ## Validation
-- `pnpm run typecheck:optimizer`
-- `pnpm run test:optimizer:helper`
+- `pnpm --filter @promptshield/db test`
 
 ## Exit condition
-The transitional TypeScript helper is explicitly non-authoritative, while the Python service remains the durable optimizer runtime owner.
+The declared durable lineage schema and the active SQLite runtime are truthful and aligned for local durable reads and writes.

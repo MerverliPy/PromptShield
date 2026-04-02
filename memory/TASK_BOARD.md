@@ -1,20 +1,22 @@
 # TASK_BOARD
 
 updated_at: 2026-04-02
-phase: 03C
+phase: 01B-R1
 status: completed
 
 ## NOW
 - No active implementation phase recorded
 
 ## NEXT
-- Select the next bounded implementation phase after the optimizer helper identity closeout
+- Select the next bounded implementation phase
 - Keep the next change scoped to a single module
 
 ## BLOCKED
 - None
 
 ## DONE_THIS_WEEK
+- 01B-R1 closed: aligned `packages/db/schema.sql` to the active SQLite lineage contract used by durable writes and dashboard reads
+- Validation passed: `pnpm --filter @promptshield/db test`
 - 03C closed: optimizer helper health and startup identity now explicitly describe a transitional TypeScript helper with Python authority
 - Validation passed: `pnpm run typecheck:optimizer`
 - Validation passed: `pnpm run test:optimizer:helper`
