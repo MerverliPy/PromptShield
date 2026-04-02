@@ -1,29 +1,39 @@
 # TASK_BOARD
 
 updated_at: 2026-04-01
-phase: Phase 05C
-status: blocked
+phase: planning
+status: awaiting_next_phase
 
 ## NOW
-- Phase 05C — Optimizer validation unblock
-- Objective: run the Python optimizer test suite in an environment with `pytest` installed and confirm whether any helper-only cleanup still remains
-- Owner: implementation
+- No active implementation phase
+- Objective: keep operational memory truthful until the next atomic phase is defined
+- Owner: planner
 
 ## NEXT
-- Install optimizer test extras from `services/optimizer/pyproject.toml`
-- Rerun `pytest services/optimizer/tests -q`
-- Resolve Phase 05C Python validation in an environment with `pytest`, then decide whether any helper-only cleanup is still needed
+- Define the next atomic implementation phase
+- Write the next bounded phase into `docs/phases/ACTIVE.md` before implementation resumes
 
 ## BLOCKED
-- Phase 05C local validation blocker: `pytest services/optimizer/tests -q` -> `pytest: command not found`
+- None
 
 ## DONE_THIS_WEEK
+- Phase 04C closed: the dashboard durable summary loader now only performs durable reads when `PROMPTSHIELD_PROXY_LINEAGE_DB` is explicitly provided, removing the source-layout-coupled default path while preserving explicit demo fallback behavior
+- Phase 04C files changed: `apps/dashboard/lib/get-dashboard-view-model.ts` and `apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- Phase 04C validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Phase 04C validation passed: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- Operational closeout completed: Phase 04B and Phase 05C are now closed, their exact validation commands and results are recorded in `memory/HANDOFF.md`, and `docs/phases/ACTIVE.md` now truthfully shows no active implementation phase
+- Phase 05C closed: optimizer root command naming is truthful, helper typecheck now runs under the repo-aligned TypeScript toolchain, and optimizer docs state the Python test-environment prerequisite explicitly
+- Phase 05C files changed: `README.md`, `services/optimizer/package.json`, and `pnpm-lock.yaml`
+- Phase 05C validation passed: `pnpm run typecheck:optimizer`
+- Phase 05C validation passed: `pnpm run test:optimizer:helper`
+- Phase 05C validation passed in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer:python` -> `4 passed in 0.30s`
+- Phase 05C validation passed in isolated venv with optimizer test extras installed: `PATH="/tmp/promptshield-optimizer-venv/bin:$PATH" pnpm run test:optimizer` -> `4 passed in 0.32s`
 - Phase 04B closed: dashboard now consumes durable lineage summaries through `@promptshield/db` with a sqlite-backed read seam and preserves explicit demo fallback behavior when durable reads are unavailable
 - Phase 04B files changed: `packages/db/src/sql-dashboard-read-model.ts`, `packages/db/src/sql-dashboard-read-model.test.ts`, `packages/db/src/index.ts`, `apps/dashboard/lib/get-dashboard-view-model.ts`, `apps/dashboard/lib/get-dashboard-view-model.test.ts`, and `apps/dashboard/package.json`
-- Validation rerun now: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
-- Validation rerun now: `pnpm --filter @promptshield/db test`
-- Validation rerun now: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
-- Validation rerun now: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
+- Phase 04B validation passed: `pnpm exec tsc -p packages/db/tsconfig.json --noEmit`
+- Phase 04B validation passed: `pnpm --filter @promptshield/db test`
+- Phase 04B validation passed: `pnpm exec tsc -p apps/dashboard/tsconfig.json --noEmit`
+- Phase 04B validation passed: `node --import tsx --test apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Phase 01J closed: proxy lineage payloads now omit misleading downgrade action values when no truthful post-route value can be derived, while keeping reject and allow action semantics truthful
 - Phase 01J files changed: `apps/proxy/src/lib/build-lineage-event.ts`, `apps/proxy/src/lib/build-lineage-event.test.ts`, and `apps/proxy/src/routes/chat-completions.test.ts`
 - Validation rerun now: `pnpm exec tsc -p apps/proxy/tsconfig.json --noEmit`
@@ -52,4 +62,3 @@ status: blocked
 - Validation rerun now: `pnpm --filter @promptshield/optimizer test`
 - Review completed after implementation fix: `docs/refactor-summary.md`
 - Review completed after implementation fix: `apps/dashboard/lib/get-dashboard-view-model.ts`
-- Left open after review: Phase 04B partial, Phase 05C blocked
