@@ -3,47 +3,48 @@
 Status: COMPLETE
 
 ## Goal
-Align the static dashboard read model’s `recentOutcomeLimit` behavior with the SQL-backed read model so list slicing is deterministic and safe for all callers.
+Lock down the SQL-backed dashboard read model’s `recentOutcomeLimit` behavior with regression tests so durable and static summary reads stay aligned.
 
 ## Why this phase is next
-`createStaticDashboardReadModel` currently slices directly and can behave unexpectedly for negative or non-finite limits, while the SQL read model already normalizes those values. Tightening this seam is a small, high-confidence fix that keeps dashboard read-model semantics consistent.
+The static dashboard read model was just normalized, but the SQLite-backed read model is the shared durable path used by the dashboard and worker. Its limit handling is already implemented, yet the edge cases are only partially covered. Adding focused regression coverage here is the smallest safe step that prevents semantic drift across durable reads.
 
 ## Primary files
-- packages/db/src/dashboard-read-model.ts
-- packages/db/src/dashboard-read-model.test.ts
+- packages/db/src/sql-dashboard-read-model.test.ts
 
 ## Expected max files changed
-2
+1
 
 ## Risk
-Low; this is a pure read-model behavior change with straightforward unit coverage.
+Low; this is a test-only change against a pure read-model seam.
 
 ## Rollback note
-Revert the limit-normalization helper and its regression test if the new semantics are not desired.
+Remove the added regression tests if the SQL read-model limit semantics are intentionally changed later.
 
 ## In scope
-- Normalize `recentOutcomeLimit` before slicing static dashboard summaries.
-- Add regression tests for undefined, negative, and non-finite limits.
+- Add regression tests for unset, zero, negative, fractional, and non-finite `recentOutcomeLimit` values.
+- Confirm the SQL dashboard read model still skips the recent-outcomes query at limit `0`.
 
 ## Out of scope
 - Dashboard UI changes.
-- SQL read-model changes.
+- SQL read-model implementation changes.
 - Proxy, worker, or optimizer behavior.
 
 ## Tasks
-- Update the static dashboard read model to clamp invalid limits safely.
-- Add unit coverage for the static read model’s limit handling.
+- Add focused regression tests for SQL dashboard limit normalization.
+- Keep the assertions narrow so query-shape and metric behavior remain stable.
 
 ## Validation command
 pnpm --filter @promptshield/db test
 
 ## Validation
-- Passed: `pnpm --filter @promptshield/db test`
+- `pnpm --filter @promptshield/db test` passed.
+- Validator PASS.
 
 ## Acceptance criteria
-- Static dashboard summaries return the full list only for unset limits.
-- Negative or non-finite limits do not produce partial/accidental slicing.
+- SQL dashboard summaries return all recent outcomes only when the limit is unset.
+- Limit `0` skips the recent-outcomes query and returns an empty list.
+- Negative, fractional, and non-finite limits normalize safely.
 - The db package test suite passes.
 
 ## Completion summary
-Normalized static `recentOutcomeLimit` handling to match SQL semantics: undefined returns all outcomes, finite values are truncated and clamped at zero, and non-finite values return no outcomes. Added regression tests covering undefined, negative, fractional, and non-finite limits; db tests passed.
+Added regression tests in `packages/db/src/sql-dashboard-read-model.test.ts` for unset, zero, negative, fractional, and non-finite `recentOutcomeLimit` behavior. `pnpm --filter @promptshield/db test` passed and validator returned PASS.

@@ -146,6 +146,167 @@ test("createSqlDashboardReadModel preserves zero metrics and can skip recent out
   assert.match(statements[0] ?? "", /AS monthly_spend/);
 });
 
+test("createSqlDashboardReadModel returns all recent outcomes when the limit is undefined", () => {
+  const statements: string[] = [];
+  const readModel = createSqlDashboardReadModel({
+    query(statement) {
+      statements.push(statement);
+
+      if (statement.includes("AS monthly_spend")) {
+        return [
+          {
+            monthly_spend: 18.75,
+            recovered_margin: 6.25,
+            optimized_requests: 2,
+          },
+        ];
+      }
+
+      return [
+        {
+          id: "request-2",
+          request_id: "agent.plan",
+          decision_kind: "allow",
+          model_requested: "gpt-4.1",
+          model_served: "gpt-4.1",
+          realized_savings_usd: null,
+          created_at: "2026-04-08T00:02:00.000Z",
+        },
+        {
+          id: "request-1",
+          request_id: "chat.generate",
+          decision_kind: "reject",
+          model_requested: "gpt-4.1",
+          model_served: "gpt-4.1",
+          realized_savings_usd: null,
+          created_at: "2026-04-08T00:01:00.000Z",
+        },
+      ];
+    },
+  });
+
+  const summary = readModel.readDashboardSummary({ recentOutcomeLimit: undefined });
+
+  assert.deepEqual(summary.recentOutcomes, [
+    {
+      id: "request-2",
+      requestId: "agent.plan",
+      decisionKind: "allow",
+      modelRequested: "gpt-4.1",
+      modelServed: "gpt-4.1",
+      realizedSavingsUsd: null,
+      createdAt: "2026-04-08T00:02:00.000Z",
+    },
+    {
+      id: "request-1",
+      requestId: "chat.generate",
+      decisionKind: "reject",
+      modelRequested: "gpt-4.1",
+      modelServed: "gpt-4.1",
+      realizedSavingsUsd: null,
+      createdAt: "2026-04-08T00:01:00.000Z",
+    },
+  ]);
+  assert.equal(summary.metrics.find((metric) => metric.id === "recent_outcomes")?.value, 2);
+  assert.equal(statements.length, 2);
+  assert.doesNotMatch(statements[1] ?? "", / LIMIT /);
+});
+
+test("createSqlDashboardReadModel normalizes recent outcome limits safely", () => {
+  const scenarios = [
+    {
+      limit: -1,
+      expectedRecentOutcomes: [],
+      expectedStatementsLength: 1,
+      expectedQueryPattern: undefined,
+    },
+    {
+      limit: 1.9,
+      expectedRecentOutcomes: [
+        {
+          id: "request-2",
+          requestId: "agent.plan",
+          decisionKind: "allow",
+          modelRequested: "gpt-4.1",
+          modelServed: "gpt-4.1",
+          realizedSavingsUsd: null,
+          createdAt: "2026-04-08T00:02:00.000Z",
+        },
+      ],
+      expectedStatementsLength: 2,
+      expectedQueryPattern: / LIMIT 1/,
+    },
+    {
+      limit: Number.POSITIVE_INFINITY,
+      expectedRecentOutcomes: [],
+      expectedStatementsLength: 1,
+      expectedQueryPattern: undefined,
+    },
+    {
+      limit: Number.NaN,
+      expectedRecentOutcomes: [],
+      expectedStatementsLength: 1,
+      expectedQueryPattern: undefined,
+    },
+  ];
+
+  for (const scenario of scenarios) {
+    const statements: string[] = [];
+    const readModel = createSqlDashboardReadModel({
+      query(statement) {
+        statements.push(statement);
+
+        if (statement.includes("AS monthly_spend")) {
+          return [
+            {
+              monthly_spend: 18.75,
+              recovered_margin: 6.25,
+              optimized_requests: 2,
+            },
+          ];
+        }
+
+        const rows = [
+          {
+            id: "request-2",
+            request_id: "agent.plan",
+            decision_kind: "allow",
+            model_requested: "gpt-4.1",
+            model_served: "gpt-4.1",
+            realized_savings_usd: null,
+            created_at: "2026-04-08T00:02:00.000Z",
+          },
+          {
+            id: "request-1",
+            request_id: "chat.generate",
+            decision_kind: "reject",
+            model_requested: "gpt-4.1",
+            model_served: "gpt-4.1",
+            realized_savings_usd: null,
+            created_at: "2026-04-08T00:01:00.000Z",
+          },
+        ];
+
+        if (statement.includes("LIMIT 1")) {
+          return rows.slice(0, 1);
+        }
+
+        return rows;
+      },
+    });
+
+    const summary = readModel.readDashboardSummary({ recentOutcomeLimit: scenario.limit });
+
+    assert.deepEqual(summary.recentOutcomes, scenario.expectedRecentOutcomes);
+    assert.equal(summary.metrics.find((metric) => metric.id === "recent_outcomes")?.value, scenario.expectedRecentOutcomes.length);
+    assert.equal(statements.length, scenario.expectedStatementsLength);
+
+    if (scenario.expectedQueryPattern) {
+      assert.match(statements[1] ?? "", scenario.expectedQueryPattern);
+    }
+  }
+});
+
 test("createSqlDashboardReadModel derives recent_outcomes from the returned summary rows", () => {
   const readModel = createSqlDashboardReadModel({
     query(statement) {
