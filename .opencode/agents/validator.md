@@ -22,6 +22,13 @@ Validate:
 - validation actually supports the change
 - no obvious architecture boundary violations were introduced
 
+Failure classification must be exactly one of:
+- scope drift
+- acceptance gap
+- insufficient validation
+- boundary violation
+- test regression
+
 Return exactly one of these formats.
 
 PASS
@@ -31,6 +38,7 @@ PASS
 
 FAIL
 - reason:
+- classification:
 - smallest fix list:
 - missing validation:
 - residual risk:

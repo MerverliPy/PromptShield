@@ -37,6 +37,16 @@ What it does:
 - reports status, goal, scope, validation, next step
 - does not replan or implement
 
+### Finish the current phase
+`/finish-phase`
+
+What it does:
+- summarizes the completed phase
+- reports changed files, validation, residual risk, and rollback note
+- suggests a commit message
+- marks the phase complete when appropriate
+- does not create a new phase
+
 ## Phase file
 
 Single workflow state file:
@@ -48,6 +58,21 @@ Expected statuses:
 - `IN_PROGRESS`
 - `COMPLETE`
 - `BLOCKED`
+
+Structured fields:
+- `Goal`
+- `Why this phase is next`
+- `Primary files`
+- `Expected max files changed`
+- `Risk`
+- `Rollback note`
+- `In scope`
+- `Out of scope`
+- `Tasks`
+- `Validation command`
+- `Validation`
+- `Acceptance criteria`
+- `Completion summary`
 
 Rules:
 - this is the only workflow state file
@@ -63,6 +88,7 @@ Responsible for:
 - delegating to builder and validator
 - preventing scope creep
 - replacing completed or blocked phases in place
+- updating completion summary when a phase is done
 
 ### builder
 Responsible for:
@@ -75,6 +101,12 @@ Responsible for:
 - checking whether the phase goal was met
 - confirming validation is sufficient
 - returning either `PASS` or the smallest fix list
+- classifying failure as:
+  - `scope drift`
+  - `acceptance gap`
+  - `insufficient validation`
+  - `boundary violation`
+  - `test regression`
 
 ## Repo workflow rules
 
@@ -124,10 +156,11 @@ Every `git push` automatically runs:
 ### Standard flow
 1. `/next-phase`
 2. `/run-phase`
-3. `git status`
-4. `git add -A`
-5. `git commit -m "your change"`
-6. `git push origin main`
+3. `/finish-phase`
+4. `git status`
+5. `git add -A`
+6. `git commit -m "your change"`
+7. `git push origin main`
 
 ### Continue interrupted work
 1. `/phase-status`
@@ -150,6 +183,7 @@ Examples:
 - `.opencode/commands/run-phase.md`
 - `.opencode/commands/resume-phase.md`
 - `.opencode/commands/phase-status.md`
+- `.opencode/commands/finish-phase.md`
 - `.opencode/plans/current-phase.md`
 
 ### Dev tooling

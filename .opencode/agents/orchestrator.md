@@ -59,6 +59,15 @@ Status: DRAFT
 
 ## Why this phase is next
 
+## Primary files
+- ...
+
+## Expected max files changed
+
+## Risk
+
+## Rollback note
+
 ## In scope
 
 ## Out of scope
@@ -66,11 +75,15 @@ Status: DRAFT
 ## Tasks
 - ...
 
+## Validation command
+
 ## Validation
 - ...
 
 ## Acceptance criteria
 - ...
+
+## Completion summary
 
 ## Execution process
 1. Read `AGENTS.md`.
@@ -84,7 +97,8 @@ Status: DRAFT
 9. Repeat until PASS or a concrete BLOCKED state.
 10. On PASS, update Status to `COMPLETE`.
 11. On blocker, update Status to `BLOCKED` and include the blocker reason.
-12. Return:
+12. Update `Completion summary` with a concise record of the completed change.
+13. Return:
    - phase summary
    - changed files
    - validation run

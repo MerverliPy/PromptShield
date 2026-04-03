@@ -10,6 +10,15 @@ Status: DRAFT
 
 ## Why this phase is next
 
+## Primary files
+- ...
+
+## Expected max files changed
+
+## Risk
+
+## Rollback note
+
 ## In scope
 
 ## Out of scope
@@ -17,11 +26,15 @@ Status: DRAFT
 ## Tasks
 - ...
 
+## Validation command
+
 ## Validation
 - ...
 
 ## Acceptance criteria
 - ...
+
+## Completion summary
 PHASE
 
 echo "Reset .opencode/plans/current-phase.md"
