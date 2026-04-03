@@ -15,12 +15,27 @@ export function createDashboardReadModel(readModel: DashboardReadModel): Dashboa
 export function createStaticDashboardReadModel(summary: DashboardSummary): DashboardReadModel {
   return createDashboardReadModel({
     readDashboardSummary(query) {
-      const recentOutcomeLimit = query?.recentOutcomeLimit ?? summary.recentOutcomes.length;
+      const recentOutcomeLimit = normalizeRecentOutcomeLimit(query?.recentOutcomeLimit);
 
       return {
         metrics: summary.metrics,
-        recentOutcomes: summary.recentOutcomes.slice(0, recentOutcomeLimit),
+        recentOutcomes:
+          recentOutcomeLimit === undefined
+            ? summary.recentOutcomes
+            : summary.recentOutcomes.slice(0, recentOutcomeLimit),
       };
     },
   });
+}
+
+function normalizeRecentOutcomeLimit(limit: DashboardSummaryQuery["recentOutcomeLimit"]) {
+  if (limit === undefined) {
+    return undefined;
+  }
+
+  if (!Number.isFinite(limit)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.trunc(limit));
 }
