@@ -12,5 +12,14 @@
     "prune": true,
     "reserved": 12000
   },
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      ".next/**",
+      ".venv/**",
+      ".triage-logs/**"
+    ]
+  },
   "instructions": ["AGENTS.md"]
 }
