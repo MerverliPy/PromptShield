@@ -5,37 +5,14 @@
 ### Create the next bounded phase
 `/next-phase`
 
-What it does:
-- asks the orchestrator to inspect the repo
-- chooses the highest-value bounded next task
-- writes `.opencode/plans/current-phase.md`
-- does not implement yet
-
 ### Execute the current phase
 `/run-phase`
-
-What it does:
-- reads `.opencode/plans/current-phase.md`
-- orchestrator delegates to `builder`
-- validator checks the result
-- loops until `PASS` or `BLOCKED`
-- updates phase status
 
 ### Continue the active phase without replanning
 `/resume-phase`
 
-What it does:
-- resumes only the current active phase
-- does not generate a new phase
-- refuses to run if the active phase is already complete or blocked
-
 ### Show current phase without changing it
 `/phase-status`
-
-What it does:
-- reads `.opencode/plans/current-phase.md`
-- reports status, goal, scope, validation, next step
-- does not replan or implement
 
 ### Finish the current phase
 `/finish-phase`
@@ -83,34 +60,23 @@ Structured fields:
 - `Acceptance criteria`
 - `Completion summary`
 
-Rules:
-- this is the only workflow state file
-- no workflow state should go into `memory/`
-- old phases are tracked through Git history, not archive files
-
 ## Agent roles
 
 ### orchestrator
-Responsible for:
-- selecting the next bounded phase
-- writing the phase file
-- delegating to builder and validator
-- preventing scope creep
-- replacing completed or blocked phases in place
-- updating completion summary when a phase is done
+- selects the next bounded phase
+- writes the phase file
+- delegates to builder and validator
+- updates completion summary
 
 ### builder
-Responsible for:
-- implementing only the current phase
-- keeping changes tight
-- running the smallest useful validation
+- implements only the current phase
+- keeps changes tight
+- runs the smallest useful validation
 
 ### validator
-Responsible for:
-- checking whether the phase goal was met
-- confirming validation is sufficient
-- returning either `PASS` or the smallest fix list
-- classifying failure as:
+- checks the phase goal and acceptance criteria
+- returns `PASS` or the smallest fix list
+- classifies failure as:
   - `scope drift`
   - `acceptance gap`
   - `insufficient validation`
@@ -118,11 +84,10 @@ Responsible for:
   - `test regression`
 
 ### shipper
-Responsible for:
-- reading the completed phase
-- generating a commit message from context
-- calling `pnpm phase:ship -- "<message>"`
-- refusing to ship incomplete phases
+- reads the completed phase
+- generates a commit message from context
+- calls `pnpm phase:ship -- "<message>"`
+- refuses to ship incomplete phases
 
 ## Shell commands
 
