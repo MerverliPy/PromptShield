@@ -1,15 +1,15 @@
 # Current Phase
 
-Status: DRAFT
+Status: COMPLETE
 
 ## Goal
-Add focused unit coverage for dashboard view-model formatting so metric and outcome text stay predictable as the dashboard shifts onto durable summaries.
+Add focused unit coverage for dashboard view-model formatting so metric labels, values, and recent outcome summaries stay predictable.
 
 ## Why this phase is next
-`getDashboardViewModel` and the durable dashboard read model are already wired up, but the dashboard view-model formatting branches still do not have direct coverage. This is a small, user-facing gap with a clear validation path and it locks down the final presentation layer without widening scope.
+`createDashboardViewModel` is the smallest incomplete seam in the active dashboard path. Its formatting branches are user-facing, isolated to one module, and already have a direct test surface, so this phase has high value with a very clear validation path.
 
 ## In scope
-- `apps/dashboard/lib/get-dashboard-view-model.test.ts` and/or a focused `apps/dashboard/lib/view-models.test.ts`
+- `apps/dashboard/lib/get-dashboard-view-model.test.ts`
 - Direct tests for `createDashboardViewModel`
 - Metric label/value/note formatting, including unknown-metric fallback
 - Recent outcome summary branches: savings, reroute, and rejection
@@ -21,7 +21,7 @@ Add focused unit coverage for dashboard view-model formatting so metric and outc
 - New data sources or refactors beyond the view-model test coverage
 
 ## Tasks
-- Add focused `createDashboardViewModel` test coverage for metric formatting and fallback metadata.
+- Add focused `createDashboardViewModel` coverage for metric formatting and fallback metadata.
 - Add outcome summary assertions for the saved, rerouted, and rejected branches.
 - Keep the existing durable/fallback `getDashboardViewModel` coverage intact.
 
