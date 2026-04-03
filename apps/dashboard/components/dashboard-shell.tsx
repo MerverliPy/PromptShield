@@ -1,3 +1,4 @@
+import React from "react";
 import { MetricCard } from "@promptshield/ui/card";
 import type { DashboardViewModel } from "../lib/view-models";
 

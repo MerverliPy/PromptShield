@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
-    "test": "node --import tsx --test lib/get-dashboard-view-model.test.ts",
+    "test": "node --import tsx --test lib/get-dashboard-view-model.test.ts components/dashboard-shell.test.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
