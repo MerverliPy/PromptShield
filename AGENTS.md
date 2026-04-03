@@ -43,6 +43,6 @@ Every phase must contain:
 
 ## Workflow state
 - `.opencode/plans/current-phase.md` is the only workflow state file.
-- Do not update files under `memory/` as part of planning, execution, handoff, or validation.
+- Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 - Do not create archive, handoff, task-board, or next-steps workflow files.
 - Use Git history for prior phase history.

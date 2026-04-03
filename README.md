@@ -59,11 +59,9 @@ packages/
 docs/
   architecture.md
   phases/
-memory/
-  CURRENT_STATE.md
-  NEXT_STEPS.md
-  DECISIONS.md
-  HANDOFF.md
+.opencode/
+  plans/
+    current-phase.md
 ```
 
 ## Principles
@@ -74,4 +72,5 @@ memory/
 - explainability first
 
 See `docs/architecture.md` for boundaries and data flow.
-See `docs/phases/README.md` for delivery order and `docs/phases/ACTIVE.md` for the current execution prompt.
+See `docs/phases/README.md` for roadmap context.
+See `AGENTS.md` and `.opencode/plans/current-phase.md` for the active workflow contract and current phase.

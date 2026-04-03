@@ -76,7 +76,7 @@ Structured fields:
 
 Rules:
 - this is the only workflow state file
-- no workflow state should go into `memory/`
+- no workflow state should exist outside `.opencode/plans/current-phase.md`
 - old phases are tracked through Git history, not archive files
 
 ## Agent roles
@@ -115,7 +115,7 @@ Responsible for:
 - prefer 3 files or fewer
 - no opportunistic refactors
 - no extra workflow docs
-- do not update `memory/` as part of workflow
+- do not create extra workflow-state files during workflow execution
 - Git history is the archive
 
 ## Shell commands

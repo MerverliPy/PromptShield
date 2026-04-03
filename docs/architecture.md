@@ -101,5 +101,5 @@ Purpose: shared presentational primitives only.
 
 - keep files small and single-purpose
 - prefer shared contracts over duplicate local types
-- read `memory/HANDOFF.md` first, then only the active phase and files in scope
+- read `AGENTS.md`, then `.opencode/plans/current-phase.md`, then only the active phase files in scope
 - split work that spans more than one app or package

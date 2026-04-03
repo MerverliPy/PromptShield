@@ -8,7 +8,7 @@ Create the next bounded implementation phase in `.opencode/plans/current-phase.m
 State rules:
 - `.opencode/plans/current-phase.md` is the only workflow state file.
 - Do not create archive or history files for prior phases.
-- Do not modify any files under `memory/`.
+- Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 - If `.opencode/plans/current-phase.md` exists with Status `DRAFT` or `IN_PROGRESS`, do not overwrite it unless the user explicitly asked to replace or replan the active phase.
 - If `.opencode/plans/current-phase.md` exists with Status `COMPLETE`, `PASS`, or `BLOCKED`, replace it in place with the new phase.
 

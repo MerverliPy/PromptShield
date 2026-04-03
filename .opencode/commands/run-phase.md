@@ -15,7 +15,7 @@ Execution rules:
 - Repeat until the validator returns PASS or there is a concrete blocker.
 - On success, update the phase status to `COMPLETE`.
 - On blocker, update the phase status to `BLOCKED` and record the blocker reason.
-- Do not modify files under `memory/`.
+- Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 - Do not widen scope beyond the active phase.
 
 Return:

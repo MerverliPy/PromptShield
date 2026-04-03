@@ -14,7 +14,7 @@ Rules:
 - Delegate implementation to `@builder`.
 - Delegate validation to `@validator`.
 - Loop only on the smallest fix list until PASS or BLOCKED.
-- Do not touch files under `memory/`.
+- Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 
 Return:
 - phase summary

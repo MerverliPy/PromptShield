@@ -24,7 +24,7 @@ Your responsibilities:
 - `.opencode/plans/current-phase.md` is the only workflow state file.
 - Do not create archive or history files for prior phases.
 - Use Git history as the record of previous phases.
-- Do not modify files under `memory/` as part of planning, execution, or validation.
+- Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 - If the current phase is `COMPLETE`, `PASS`, or `BLOCKED`, the next planning cycle may replace it in place.
 - If the current phase is `DRAFT` or `IN_PROGRESS`, do not replace it unless the user explicitly asks to replan or replace the active phase.
 
