@@ -75,6 +75,43 @@ test("chat completions exposes unavailable lineage persistence when no adapter i
   }
 });
 
+test("chat completions exposes active lineage persistence when an adapter is configured", async () => {
+  const app = Fastify();
+  registerChatCompletionsRoute(app, {
+    lineageAdapter: {
+      async writeRequestEvent(request) {
+        return {
+          id: "request-event-active",
+          createdAt: "2026-04-01T00:00:00.000Z",
+          ...request,
+        };
+      },
+    },
+  });
+
+  try {
+    const response = await app.inject({
+      method: "POST",
+      url: "/v1/chat/completions",
+      payload: {
+        model: "gpt-4.1",
+        messages: [{ role: "user", content: "Summarize the latest request." }],
+      },
+    });
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.headers[LINEAGE_PERSISTENCE_HEADER], "active");
+    assert.equal(response.headers[LINEAGE_PERSISTENCE_REASON_HEADER], undefined);
+
+    const body = response.json();
+    assert.equal(body.kind, "allow");
+    assert.equal(typeof body.lineage?.requestId, "string");
+    assert.ok(body.lineage.requestId.startsWith("req_"));
+  } finally {
+    await app.close();
+  }
+});
+
 test("chat completions rejects an invalid request with typed issues", async () => {
   const app = Fastify();
   registerChatCompletionsRoute(app);
