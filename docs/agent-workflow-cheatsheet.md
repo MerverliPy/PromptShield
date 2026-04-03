@@ -44,8 +44,17 @@ What it does:
 - summarizes the completed phase
 - reports changed files, validation, residual risk, and rollback note
 - suggests a commit message
-- marks the phase complete when appropriate
-- does not create a new phase
+- returns whether the phase is ready to ship
+
+### Ship the current phase
+`/ship-phase`
+
+What it does:
+- reads the completed phase
+- generates a commit message from the active phase and diff context
+- runs `pnpm phase:ship -- "<generated message>"`
+- pushes the current branch
+- refuses to ship unless the phase is `COMPLETE` or `PASS`
 
 ## Phase file
 
@@ -76,7 +85,7 @@ Structured fields:
 
 Rules:
 - this is the only workflow state file
-- no workflow state should exist outside `.opencode/plans/current-phase.md`
+- no workflow state should go into `memory/`
 - old phases are tracked through Git history, not archive files
 
 ## Agent roles
@@ -108,106 +117,34 @@ Responsible for:
   - `boundary violation`
   - `test regression`
 
-## Repo workflow rules
-
-- one phase at a time
-- prefer one module
-- prefer 3 files or fewer
-- no opportunistic refactors
-- no extra workflow docs
-- do not create extra workflow-state files during workflow execution
-- Git history is the archive
+### shipper
+Responsible for:
+- reading the completed phase
+- generating a commit message from context
+- calling `pnpm phase:ship -- "<message>"`
+- refusing to ship incomplete phases
 
 ## Shell commands
 
-### Show current phase file
-`pnpm phase:show`
-
-### Reset the phase file template
-`pnpm phase:clear`
-
-### Run repo doctor checks
-`pnpm doctor`
-
-### Verify dashboard
 `pnpm verify:dashboard`
-
-### Verify proxy
 `pnpm verify:proxy`
-
-### Verify worker
 `pnpm verify:worker`
-
-### Verify only changed areas
 `pnpm verify:changed`
-
-## Git behavior
-
-### Pre-push hook
-Every `git push` automatically runs:
-
-`pnpm verify:changed`
-
-### Safe push alias
-`git safe-push origin main`
+`pnpm phase:show`
+`pnpm phase:clear`
+`pnpm doctor`
+`pnpm phase:ship -- "your commit message"`
 
 ## Daily usage loop
 
-### Standard flow
 1. `/next-phase`
 2. `/run-phase`
 3. `/finish-phase`
-4. `git status`
-5. `git add -A`
-6. `git commit -m "your change"`
-7. `git push origin main`
+4. `/ship-phase`
 
-### Continue interrupted work
-1. `/phase-status`
-2. `/resume-phase`
+## Troubleshooting
 
-### Steer the planner
-Examples:
-- `/next-phase dashboard only`
-- `Create the next phase for improving proxy lineage persistence visibility. Planning only.`
-
-## Files that matter most
-
-### Workflow and config
-- `AGENTS.md`
-- `opencode.json`
-- `.opencode/agents/orchestrator.md`
-- `.opencode/agents/builder.md`
-- `.opencode/agents/validator.md`
-- `.opencode/commands/next-phase.md`
-- `.opencode/commands/run-phase.md`
-- `.opencode/commands/resume-phase.md`
-- `.opencode/commands/phase-status.md`
-- `.opencode/commands/finish-phase.md`
-- `.opencode/plans/current-phase.md`
-
-### Dev tooling
-- `.githooks/pre-push`
-- `scripts/dev/verify-changed.sh`
-- `scripts/dev/clear-phase.sh`
-- `scripts/dev/doctor.sh`
-
-## Quick troubleshooting
-
-### OpenCode shows stale commands
-Do a full restart of OpenCode from the repo root.
-
-### Push fails on checks
-Run:
-`pnpm verify:changed`
-
-### Unsure what phase is active
-Run:
-`/phase-status`
-
-or:
-`pnpm phase:show`
-
-### Need to wipe the phase template
-Run:
-`pnpm phase:clear`
+- stale commands: restart OpenCode from repo root
+- push check failure: run `pnpm verify:changed`
+- inspect active phase: `/phase-status` or `pnpm phase:show`
+- reset phase template: `pnpm phase:clear`
