@@ -5,6 +5,13 @@ agent: orchestrator
 
 Create the next bounded implementation phase in `.opencode/plans/current-phase.md`.
 
+State rules:
+- `.opencode/plans/current-phase.md` is the only workflow state file.
+- Do not create archive or history files for prior phases.
+- Do not modify any files under `memory/`.
+- If `.opencode/plans/current-phase.md` exists with Status `DRAFT` or `IN_PROGRESS`, do not overwrite it unless the user explicitly asked to replace or replan the active phase.
+- If `.opencode/plans/current-phase.md` exists with Status `COMPLETE`, `PASS`, or `BLOCKED`, replace it in place with the new phase.
+
 Selection rubric:
 1. Read `AGENTS.md`.
 2. Inspect the current repo state.

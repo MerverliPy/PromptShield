@@ -40,3 +40,9 @@ Every phase must contain:
 - Do not move optimizer HTTP ownership out of Python.
 - Do not put business logic into dashboard UI components.
 - Do not add database or network behavior to `packages/policy`.
+
+## Workflow state
+- `.opencode/plans/current-phase.md` is the only workflow state file.
+- Do not update files under `memory/` as part of planning, execution, handoff, or validation.
+- Do not create archive, handoff, task-board, or next-steps workflow files.
+- Use Git history for prior phase history.

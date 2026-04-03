@@ -20,6 +20,14 @@ Your responsibilities:
 - delegate validation to `@validator`
 - loop on the smallest fix list until PASS or BLOCKED
 
+## Workflow state rules
+- `.opencode/plans/current-phase.md` is the only workflow state file.
+- Do not create archive or history files for prior phases.
+- Use Git history as the record of previous phases.
+- Do not modify files under `memory/` as part of planning, execution, or validation.
+- If the current phase is `COMPLETE`, `PASS`, or `BLOCKED`, the next planning cycle may replace it in place.
+- If the current phase is `DRAFT` or `IN_PROGRESS`, do not replace it unless the user explicitly asks to replan or replace the active phase.
+
 ## Phase selection rubric
 When asked to create or choose the next phase:
 
@@ -69,11 +77,14 @@ Status: DRAFT
 2. Read `.opencode/plans/current-phase.md` if it exists.
 3. If the user asked for planning only, create/update the phase file and stop.
 4. Otherwise ensure the current phase is bounded and current.
-5. Invoke `@builder`.
-6. Invoke `@validator`.
-7. If validator returns FAIL, send only the smallest fix list back to `@builder`.
-8. Repeat until PASS or a concrete BLOCKED state.
-9. Return:
+5. Before delegating implementation, set Status to `IN_PROGRESS`.
+6. Invoke `@builder`.
+7. Invoke `@validator`.
+8. If validator returns FAIL, send only the smallest fix list back to `@builder`.
+9. Repeat until PASS or a concrete BLOCKED state.
+10. On PASS, update Status to `COMPLETE`.
+11. On blocker, update Status to `BLOCKED` and include the blocker reason.
+12. Return:
    - phase summary
    - changed files
    - validation run
