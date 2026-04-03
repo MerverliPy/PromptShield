@@ -91,13 +91,13 @@ Structured fields:
 
 ## Shell commands
 
-`pnpm verify:dashboard`
-`pnpm verify:proxy`
-`pnpm verify:worker`
-`pnpm verify:changed`
-`pnpm phase:show`
-`pnpm phase:clear`
-`pnpm doctor`
+`pnpm verify:dashboard`  
+`pnpm verify:proxy`  
+`pnpm verify:worker`  
+`pnpm verify:changed`  
+`pnpm phase:show`  
+`pnpm phase:clear`  
+`pnpm repo:doctor`  
 `pnpm phase:ship -- "your commit message"`
 
 ## Daily usage loop
@@ -112,4 +112,5 @@ Structured fields:
 - stale commands: restart OpenCode from repo root
 - push check failure: run `pnpm verify:changed`
 - inspect active phase: `/phase-status` or `pnpm phase:show`
+- check workflow health: `pnpm repo:doctor`
 - reset phase template: `pnpm phase:clear`
