@@ -16,7 +16,7 @@ export function getDashboardViewModel() {
     });
 
     return createDashboardViewModel(summary, {
-      dataIndicator: "Durable lineage summary",
+      dataIndicator: "Durable lineage summary: live database read",
     });
   } catch {
     return getFallbackDashboardViewModel();

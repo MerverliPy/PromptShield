@@ -35,14 +35,14 @@ candidates:
     priority: 8
     status: open
     blocked_by: []
-    why_now: improves operator visibility into persistence configuration
+    why_now: improves operator visibility into whether persistence is active or degraded
     files:
       - apps/proxy/src/server.ts
-      - apps/proxy/src/server.test.ts
+      - apps/proxy/src/routes/chat-completions.test.ts
     validation:
       - pnpm verify:proxy
     acceptance:
-      - health surface reports configured persistence capability
+      - /health reports persistence state and degradation reason when unavailable
       - proxy tests pass
 
   - id: dashboard-decision-audit-panel

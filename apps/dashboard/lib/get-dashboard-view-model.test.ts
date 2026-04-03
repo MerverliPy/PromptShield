@@ -41,7 +41,10 @@ test("getDashboardViewModel reads durable dashboard data when lineage tables are
 
     const dashboard = getDashboardViewModel();
 
-    assert.equal(dashboard.dataIndicator, "Durable lineage summary");
+    assert.equal(
+      dashboard.dataIndicator,
+      "Durable lineage summary: live database read",
+    );
     assert.deepEqual(dashboard.metrics, [
       {
         label: "Monthly spend",
