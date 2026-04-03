@@ -20,7 +20,10 @@
     "verify:dashboard": "pnpm --filter @promptshield/dashboard test",
     "verify:proxy": "pnpm --filter @promptshield/proxy test",
     "verify:worker": "pnpm --filter @promptshield/worker test",
-    "verify:changed": "bash scripts/dev/verify-changed.sh"
+    "verify:changed": "bash scripts/dev/verify-changed.sh",
+    "phase:show": "cat .opencode/plans/current-phase.md",
+    "phase:clear": "bash scripts/dev/clear-phase.sh",
+    "doctor": "bash scripts/dev/doctor.sh"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

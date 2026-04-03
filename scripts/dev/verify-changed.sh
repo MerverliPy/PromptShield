@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Determine the comparison range for changed files.
 if git rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1; then
-  RANGE="$(git merge-base HEAD @{u})...HEAD"
+  BASE="$(git merge-base HEAD @{u})"
+  RANGE="$BASE...HEAD"
 elif git rev-parse --verify origin/main >/dev/null 2>&1; then
-  RANGE="$(git merge-base HEAD origin/main)...HEAD"
+  BASE="$(git merge-base HEAD origin/main)"
+  RANGE="$BASE...HEAD"
 else
   RANGE="HEAD~1..HEAD"
 fi
@@ -20,24 +23,75 @@ run_dashboard=0
 run_proxy=0
 run_worker=0
 
+# Root-level changes that should fan out broadly.
+run_all_on_root_config=0
+
+echo "Changed files detected in range: $RANGE"
+echo "$CHANGED"
+echo
+
 while IFS= read -r file; do
   [[ -z "$file" ]] && continue
 
   case "$file" in
-    apps/dashboard/*)
+    # Workflow/docs only: no package verification needed.
+    .opencode/*|.githooks/*|docs/*|README.md|LICENSE|*.md)
+      ;;
+
+    # Dashboard-only internals
+    apps/dashboard/lib/*|apps/dashboard/components/*|apps/dashboard/app/*|apps/dashboard/test/*|apps/dashboard/*.json|apps/dashboard/*.ts|apps/dashboard/*.tsx)
       run_dashboard=1
       ;;
-    apps/proxy/*|packages/contracts/*|packages/policy/*|packages/db/*)
+
+    # Proxy-only internals
+    apps/proxy/src/*|apps/proxy/test/*|apps/proxy/*.json|apps/proxy/*.ts)
       run_proxy=1
       ;;
-    apps/worker/*|packages/contracts/*|packages/policy/*|packages/db/*)
+
+    # Worker-only internals
+    apps/worker/src/*|apps/worker/test/*|apps/worker/*.json|apps/worker/*.ts)
+      run_worker=1
+      ;;
+
+    # Shared packages: fan out only to likely dependents
+    packages/contracts/*|packages/policy/*)
+      run_proxy=1
+      run_worker=1
+      ;;
+
+    packages/db/*)
+      run_dashboard=1
+      run_proxy=1
+      run_worker=1
+      ;;
+
+    packages/ui/*)
+      run_dashboard=1
+      ;;
+
+    # Python optimizer seam does not currently map to the Node test surfaces here.
+    services/optimizer/*)
+      ;;
+
+    # Root/tooling changes: broaden verification.
+    package.json|pnpm-lock.yaml|pnpm-workspace.yaml|tsconfig.json|tsconfig.*.json|turbo.json|vitest.config.*|eslint.config.*|.eslintrc*|.prettierrc*|.npmrc)
+      run_all_on_root_config=1
+      ;;
+
+    # Anything else unknown: be conservative and run the main impacted JS surfaces.
+    *)
+      run_dashboard=1
+      run_proxy=1
       run_worker=1
       ;;
   esac
 done <<< "$CHANGED"
 
-echo "Changed files detected in range: $RANGE"
-echo "$CHANGED"
+if [[ "$run_all_on_root_config" -eq 1 ]]; then
+  run_dashboard=1
+  run_proxy=1
+  run_worker=1
+fi
 
 if [[ "$run_dashboard" -eq 0 && "$run_proxy" -eq 0 && "$run_worker" -eq 0 ]]; then
   echo "No mapped package checks required."
@@ -45,22 +99,21 @@ if [[ "$run_dashboard" -eq 0 && "$run_proxy" -eq 0 && "$run_worker" -eq 0 ]]; th
 fi
 
 if [[ "$run_dashboard" -eq 1 ]]; then
-  echo
   echo "Running dashboard verification..."
   pnpm verify:dashboard
+  echo
 fi
 
 if [[ "$run_proxy" -eq 1 ]]; then
-  echo
   echo "Running proxy verification..."
   pnpm verify:proxy
+  echo
 fi
 
 if [[ "$run_worker" -eq 1 ]]; then
-  echo
   echo "Running worker verification..."
   pnpm verify:worker
+  echo
 fi
 
-echo
 echo "Changed-package verification passed."

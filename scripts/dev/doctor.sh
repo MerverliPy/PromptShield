@@ -3,26 +3,25 @@ set -euo pipefail
 
 echo "Repo root: $(pwd)"
 echo "Branch: $(git branch --show-current)"
+echo
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "git not found"
+  exit 1
+fi
 
 if ! command -v pnpm >/dev/null 2>&1; then
   echo "pnpm not found"
   exit 1
 fi
 
-if [[ ! -f "opencode.json" ]]; then
-  echo "opencode.json missing"
-  exit 1
-fi
+[[ -f "opencode.json" ]] || { echo "opencode.json missing"; exit 1; }
+[[ -f "AGENTS.md" ]] || { echo "AGENTS.md missing"; exit 1; }
+[[ -f ".opencode/commands/next-phase.md" ]] || { echo ".opencode/commands/next-phase.md missing"; exit 1; }
+[[ -f ".opencode/commands/run-phase.md" ]] || { echo ".opencode/commands/run-phase.md missing"; exit 1; }
+[[ -f ".opencode/plans/current-phase.md" ]] || { echo ".opencode/plans/current-phase.md missing"; exit 1; }
 
-if [[ ! -f ".opencode/commands/next-phase.md" ]]; then
-  echo ".opencode/commands/next-phase.md missing"
-  exit 1
-fi
-
-if [[ ! -f ".opencode/commands/run-phase.md" ]]; then
-  echo ".opencode/commands/run-phase.md missing"
-  exit 1
-fi
-
+echo "Git status:"
 git status --short
+echo
 echo "Doctor check passed."
