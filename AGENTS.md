@@ -11,23 +11,39 @@
 - `packages/ui` is presentational only.
 
 ## Default execution loop
-1. Create or update `.opencode/plans/current-phase.md`.
-2. Keep exactly one active phase.
-3. Keep the phase bounded:
+1. Refresh backlog candidates only when needed.
+2. Create or update `.opencode/plans/current-phase.md`.
+3. Keep exactly one active phase.
+4. Keep the phase bounded:
    - prefer one module
    - prefer <=3 files
    - no opportunistic refactors
-4. Implement only the current phase.
-5. Run the smallest useful validation.
-6. Validate the phase.
-7. If validation fails, fix only the reported issues and validate again.
-8. Stop only when the phase is `PASS` or `BLOCKED`.
+5. Implement only the current phase.
+6. Run the smallest useful validation.
+7. Validate the phase.
+8. If validation fails, fix only the reported issues and validate again.
+9. Stop only when the phase is `PASS` or `BLOCKED`.
+
+## Backlog rules
+- `.opencode/backlog/candidates.yaml` is the source of truth for next-phase selection.
+- Prefer selecting from backlog over broad repo scanning.
+- Broad repo discovery should happen only during backlog refresh or when backlog candidates are missing or unusable.
+- Backlog items must be concrete:
+  - exact module
+  - exact files
+  - exact validation
+  - clear user-facing or operator-facing reason
+- Reject generic backlog items like:
+  - improve coverage
+  - cleanup
+  - refactor module
 
 ## Phase file contract
 Every phase must contain:
 - Status
 - Goal
 - Why this phase is next
+- Backlog item
 - Primary files
 - Expected max files changed
 - Risk
@@ -50,6 +66,7 @@ Every phase must contain:
 
 ## Workflow state
 - `.opencode/plans/current-phase.md` is the only workflow state file.
+- `.opencode/backlog/candidates.yaml` is a planning input file, not a workflow state file.
 - Do not create or update workflow-state files outside `.opencode/plans/current-phase.md`.
 - Do not create archive, handoff, task-board, or next-steps workflow files.
 - Use Git history for prior phase history.

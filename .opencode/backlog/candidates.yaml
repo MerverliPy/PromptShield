@@ -1,0 +1,62 @@
+version: 1
+
+rules:
+  selection_order:
+    - explicit_user_scope
+    - highest_priority
+    - same_module_followup
+    - smallest_safe_scope
+    - clearest_validation
+  constraints:
+    max_files_changed: 3
+    prefer_single_module: true
+    avoid_generic_tasks: true
+
+candidates:
+  - id: dashboard-durable-status-clarity
+    title: clarify durable vs fallback dashboard status
+    module: dashboard
+    priority: 9
+    status: open
+    blocked_by: []
+    why_now: operator-facing clarity for durable versus fallback reads
+    files:
+      - apps/dashboard/lib/get-dashboard-view-model.ts
+      - apps/dashboard/lib/get-dashboard-view-model.test.ts
+    validation:
+      - pnpm verify:dashboard
+    acceptance:
+      - dashboard clearly signals durable versus fallback state
+      - dashboard tests pass
+
+  - id: proxy-health-capabilities
+    title: expose persistence capability details in proxy health
+    module: proxy
+    priority: 8
+    status: open
+    blocked_by: []
+    why_now: improves operator visibility into persistence configuration
+    files:
+      - apps/proxy/src/server.ts
+      - apps/proxy/src/server.test.ts
+    validation:
+      - pnpm verify:proxy
+    acceptance:
+      - health surface reports configured persistence capability
+      - proxy tests pass
+
+  - id: dashboard-decision-audit-panel
+    title: add recent decision audit visibility to dashboard
+    module: dashboard
+    priority: 7
+    status: open
+    blocked_by: []
+    why_now: adds immediate operator value without widening into multi-module refactors
+    files:
+      - apps/dashboard/lib/get-dashboard-view-model.ts
+      - apps/dashboard/lib/get-dashboard-view-model.test.ts
+    validation:
+      - pnpm verify:dashboard
+    acceptance:
+      - dashboard exposes recent decision summary information
+      - dashboard tests pass

@@ -2,8 +2,22 @@
 
 ## Core OpenCode commands
 
+### Refresh backlog candidates
+`/refresh-backlog`
+
+What it does:
+- refreshes `.opencode/backlog/candidates.yaml`
+- updates the candidate list used by `/next-phase`
+- does not create a new phase
+
 ### Create the next bounded phase
 `/next-phase`
+
+What it does:
+- reads `.opencode/backlog/candidates.yaml` first
+- chooses the highest-value bounded candidate
+- writes `.opencode/plans/current-phase.md`
+- does not implement yet
 
 ### Execute the current phase
 `/run-phase`
@@ -17,25 +31,23 @@
 ### Finish the current phase
 `/finish-phase`
 
-What it does:
-- summarizes the completed phase
-- reports changed files, validation, residual risk, and rollback note
-- suggests a commit message
-- returns whether the phase is ready to ship
-
 ### Ship the current phase
 `/ship-phase`
 
-What it does:
-- reads the completed phase
-- generates a commit message from the active phase and diff context
-- runs `pnpm phase:ship -- "<generated message>"`
-- pushes the current branch
-- refuses to ship unless the phase is `COMPLETE` or `PASS`
+## Backlog file
+
+Planning input file:
+
+`.opencode/backlog/candidates.yaml`
+
+Rules:
+- used for fast next-phase selection
+- should contain concrete, bounded, high-value candidates
+- should avoid generic work like coverage cleanup or broad refactors
 
 ## Phase file
 
-Single workflow state file:
+Workflow state file:
 
 `.opencode/plans/current-phase.md`
 
@@ -48,6 +60,7 @@ Expected statuses:
 Structured fields:
 - `Goal`
 - `Why this phase is next`
+- `Backlog item`
 - `Primary files`
 - `Expected max files changed`
 - `Risk`
@@ -63,54 +76,47 @@ Structured fields:
 ## Agent roles
 
 ### orchestrator
+- prefers backlog-first planning
 - selects the next bounded phase
 - writes the phase file
 - delegates to builder and validator
-- updates completion summary
 
 ### builder
 - implements only the current phase
-- keeps changes tight
-- runs the smallest useful validation
 
 ### validator
-- checks the phase goal and acceptance criteria
-- returns `PASS` or the smallest fix list
-- classifies failure as:
-  - `scope drift`
-  - `acceptance gap`
-  - `insufficient validation`
-  - `boundary violation`
-  - `test regression`
+- validates the current phase
 
 ### shipper
-- reads the completed phase
-- generates a commit message from context
-- calls `pnpm phase:ship -- "<message>"`
-- refuses to ship incomplete phases
+- generates the commit message
+- ships the completed phase
 
 ## Shell commands
 
-`pnpm verify:dashboard`  
-`pnpm verify:proxy`  
-`pnpm verify:worker`  
-`pnpm verify:changed`  
+`pnpm backlog:show`  
 `pnpm phase:show`  
 `pnpm phase:clear`  
+`pnpm verify:changed`  
 `pnpm repo:doctor`  
 `pnpm phase:ship -- "your commit message"`
 
 ## Daily usage loop
 
-1. `/next-phase`
-2. `/run-phase`
-3. `/finish-phase`
-4. `/ship-phase`
+1. `/refresh-backlog` occasionally
+2. `/next-phase`
+3. `/run-phase`
+4. `/finish-phase`
+5. `/ship-phase`
+
+## Fast-path usage
+
+- `/next-phase dashboard`
+- `/next-phase proxy`
+- `/next-phase highest-priority`
 
 ## Troubleshooting
 
 - stale commands: restart OpenCode from repo root
-- push check failure: run `pnpm verify:changed`
-- inspect active phase: `/phase-status` or `pnpm phase:show`
-- check workflow health: `pnpm repo:doctor`
-- reset phase template: `pnpm phase:clear`
+- inspect backlog: `pnpm backlog:show`
+- inspect phase: `/phase-status` or `pnpm phase:show`
+- workflow health: `pnpm repo:doctor`

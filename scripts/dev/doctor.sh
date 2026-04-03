@@ -11,7 +11,10 @@ command -v pnpm >/dev/null 2>&1 || { echo "pnpm not found"; exit 1; }
 [[ -f "opencode.json" ]] || { echo "opencode.json missing"; exit 1; }
 [[ -f "AGENTS.md" ]] || { echo "AGENTS.md missing"; exit 1; }
 
+[[ -f ".opencode/backlog/candidates.yaml" ]] || { echo ".opencode/backlog/candidates.yaml missing"; exit 1; }
+
 [[ -f ".opencode/commands/next-phase.md" ]] || { echo ".opencode/commands/next-phase.md missing"; exit 1; }
+[[ -f ".opencode/commands/refresh-backlog.md" ]] || { echo ".opencode/commands/refresh-backlog.md missing"; exit 1; }
 [[ -f ".opencode/commands/run-phase.md" ]] || { echo ".opencode/commands/run-phase.md missing"; exit 1; }
 [[ -f ".opencode/commands/resume-phase.md" ]] || { echo ".opencode/commands/resume-phase.md missing"; exit 1; }
 [[ -f ".opencode/commands/phase-status.md" ]] || { echo ".opencode/commands/phase-status.md missing"; exit 1; }

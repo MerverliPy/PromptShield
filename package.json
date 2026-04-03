@@ -24,7 +24,8 @@
     "phase:show": "cat .opencode/plans/current-phase.md",
     "phase:clear": "bash scripts/dev/clear-phase.sh",
     "phase:ship": "bash scripts/dev/phase-ship.sh",
-    "repo:doctor": "bash scripts/dev/doctor.sh"
+    "repo:doctor": "bash scripts/dev/doctor.sh",
+    "backlog:show": "cat .opencode/backlog/candidates.yaml"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
