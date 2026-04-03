@@ -16,7 +16,11 @@
     "test:optimizer": "pnpm --filter @promptshield/optimizer run test:python",
     "test:optimizer:helper": "pnpm --filter @promptshield/optimizer run test:helper",
     "test:optimizer:python": "pnpm --filter @promptshield/optimizer run test:python",
-    "format": "pnpm -r --if-present format"
+    "format": "pnpm -r --if-present format",
+    "verify:dashboard": "pnpm --filter @promptshield/dashboard test",
+    "verify:proxy": "pnpm --filter @promptshield/proxy test",
+    "verify:worker": "pnpm --filter @promptshield/worker test",
+    "verify:changed": "bash scripts/dev/verify-changed.sh"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

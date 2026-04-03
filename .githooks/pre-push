@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Running changed-package verification before push..."
+pnpm verify:changed
