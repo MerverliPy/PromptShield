@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Determine the comparison range for changed files.
 if git rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1; then
   BASE="$(git merge-base HEAD @{u})"
   RANGE="$BASE...HEAD"
@@ -22,8 +21,6 @@ fi
 run_dashboard=0
 run_proxy=0
 run_worker=0
-
-# Root-level changes that should fan out broadly.
 run_all_on_root_config=0
 
 echo "Changed files detected in range: $RANGE"
@@ -34,26 +31,21 @@ while IFS= read -r file; do
   [[ -z "$file" ]] && continue
 
   case "$file" in
-    # Workflow/docs only: no package verification needed.
     .opencode/*|.githooks/*|docs/*|README.md|LICENSE|*.md)
       ;;
 
-    # Dashboard-only internals
     apps/dashboard/lib/*|apps/dashboard/components/*|apps/dashboard/app/*|apps/dashboard/test/*|apps/dashboard/*.json|apps/dashboard/*.ts|apps/dashboard/*.tsx)
       run_dashboard=1
       ;;
 
-    # Proxy-only internals
     apps/proxy/src/*|apps/proxy/test/*|apps/proxy/*.json|apps/proxy/*.ts)
       run_proxy=1
       ;;
 
-    # Worker-only internals
     apps/worker/src/*|apps/worker/test/*|apps/worker/*.json|apps/worker/*.ts)
       run_worker=1
       ;;
 
-    # Shared packages: fan out only to likely dependents
     packages/contracts/*|packages/policy/*)
       run_proxy=1
       run_worker=1
@@ -69,16 +61,13 @@ while IFS= read -r file; do
       run_dashboard=1
       ;;
 
-    # Python optimizer seam does not currently map to the Node test surfaces here.
     services/optimizer/*)
       ;;
 
-    # Root/tooling changes: broaden verification.
     package.json|pnpm-lock.yaml|pnpm-workspace.yaml|tsconfig.json|tsconfig.*.json|turbo.json|vitest.config.*|eslint.config.*|.eslintrc*|.prettierrc*|.npmrc)
       run_all_on_root_config=1
       ;;
 
-    # Anything else unknown: be conservative and run the main impacted JS surfaces.
     *)
       run_dashboard=1
       run_proxy=1

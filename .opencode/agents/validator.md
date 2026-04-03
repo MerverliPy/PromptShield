@@ -13,6 +13,7 @@ Read:
 - `AGENTS.md`
 - `.opencode/plans/current-phase.md`
 - only the changed files needed for review
+- directly adjacent imports only when necessary
 
 Validate:
 - phase goal is met
@@ -25,9 +26,12 @@ Return exactly one of these formats.
 
 PASS
 - reason:
+- validation run:
 - residual risk:
 
 FAIL
+- reason:
 - smallest fix list:
 - missing validation:
+- residual risk:
 - blocker:
