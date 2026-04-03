@@ -15,6 +15,7 @@ Rules:
 - If the phase is not complete, report that it is not ready to finish.
 
 Return:
+- ready_to_ship: yes/no
 - phase status
 - goal
 - primary files changed
