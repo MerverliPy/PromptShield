@@ -9,6 +9,7 @@ import { test } from "node:test";
 
 import { getDashboardViewModel } from "./get-dashboard-view-model";
 import { FALLBACK_DATA_INDICATOR } from "./mock-data";
+import { createDashboardViewModel } from "./view-models";
 
 test("getDashboardViewModel reads durable dashboard data when lineage tables are available", () => {
   try {
@@ -118,4 +119,101 @@ test("getDashboardViewModel falls back to demo data when the lineage db env is u
       process.env.PROMPTSHIELD_PROXY_LINEAGE_DB = previousDatabasePath;
     }
   }
+});
+
+test("createDashboardViewModel formats known and unknown metrics", () => {
+  const dashboard = createDashboardViewModel(
+    {
+      metrics: [
+        { id: "monthly_spend", value: 1234.5, unit: "usd" },
+        { id: "recovered_margin", value: 2.5, unit: "usd" },
+        { id: "optimized_requests", value: 7, unit: "count" },
+        { id: "recent_outcomes", value: 3, unit: "count" },
+        { id: "custom_metric", value: 99, unit: "count" },
+      ],
+      recentOutcomes: [],
+    },
+    { dataIndicator: "Test data" },
+  );
+
+  assert.deepEqual(dashboard.metrics, [
+    {
+      label: "Monthly spend",
+      value: "$1,234.50",
+      note: "Current billable usage",
+    },
+    {
+      label: "Recovered margin",
+      value: "$2.50",
+      note: "Savings preserved this period",
+    },
+    {
+      label: "Optimized requests",
+      value: "7",
+      note: "Requests with savings applied",
+    },
+    {
+      label: "Recent outcomes",
+      value: "3",
+      note: "Recorded in the current summary",
+    },
+    {
+      label: "custom_metric",
+      value: "99",
+      note: "Summary metric",
+    },
+  ]);
+});
+
+test("createDashboardViewModel formats recent outcome summaries across branches", () => {
+  const dashboard = createDashboardViewModel(
+    {
+      metrics: [],
+      recentOutcomes: [
+        {
+          id: "outcome-1",
+          requestId: "chat.generate",
+          decisionKind: "downgrade",
+          modelRequested: "gpt-4.1",
+          modelServed: "gpt-4.1-mini",
+          realizedSavingsUsd: 2.5,
+          createdAt: "2026-04-02T00:00:00.000Z",
+        },
+        {
+          id: "outcome-2",
+          requestId: "chat.reroute",
+          decisionKind: "allow",
+          modelRequested: "gpt-4.1",
+          modelServed: "gpt-4.1-mini",
+          realizedSavingsUsd: null,
+          createdAt: "2026-04-02T00:00:01.000Z",
+        },
+        {
+          id: "outcome-3",
+          requestId: "chat.reject",
+          decisionKind: "reject",
+          modelRequested: "gpt-4.1",
+          modelServed: "gpt-4.1",
+          realizedSavingsUsd: null,
+          createdAt: "2026-04-02T00:00:02.000Z",
+        },
+      ],
+    },
+    { dataIndicator: "Test data" },
+  );
+
+  assert.deepEqual(dashboard.recentOutcomes, [
+    {
+      id: "outcome-1",
+      summary: "chat.generate -> saved $2.50",
+    },
+    {
+      id: "outcome-2",
+      summary: "chat.reroute -> rerouted to gpt-4.1-mini",
+    },
+    {
+      id: "outcome-3",
+      summary: "chat.reject -> rejected on gpt-4.1",
+    },
+  ]);
 });
